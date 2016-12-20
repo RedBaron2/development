@@ -13,7 +13,7 @@ install:
 # Post-install test scripts.
 test_script:
 
-- ps: $URI = “https://www.360totalsecurity.com/en/features/360-total-security/“; $HTML = Invoke-WebRequest -Uri $URI; $try = $HTML.Content -split "`n" | sls 'Current version' -Context 2; $try = $try -replace( ' : ',' = '); $techy =  ConvertFrom-StringData -StringData $try; $CurrentVersion = ( $techy.Version ); Write-Host $techy.Version; $HTML.close;
+- ps: .\testing.ps1
 
   # Output useful info for debugging.
   #- node --version
