@@ -7,15 +7,16 @@ install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   # install modules
-  - npm install
+  - cinst chocolatey -y
+  - cinst ie11 -y
 
 # Post-install test scripts.
 test_script:
   # Output useful info for debugging.
-  - node --version
-  - npm --version
+  #- node --version
+  #- npm --version
   # run tests
-  - npm test
+  #- npm test
 
 # Don't actually build.
 build: off
