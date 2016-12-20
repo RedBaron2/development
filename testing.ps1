@@ -23,3 +23,5 @@ function Test {
 
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
 Test
+write-host version is -$version-
+write-Host "This is the end Folks"
