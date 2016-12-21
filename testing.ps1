@@ -13,13 +13,12 @@ return $CurrentVersion
 $HTML.close
 }
 
-$releases = 'http://www.videosoftdev.com/free-video-editor/download'
-
 function Test {
+    $releases = 'http://www.videosoftdev.com/free-video-editor/download'
     $download_page = Invoke-WebRequest -Uri $releases
     $version = ( $download_page.Content -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
-    $version = $version -replace '<p><strong>',""
-    $version = $version -replace '</strong></p>',""
+    $version = $version -replace '<p><strong>',''
+    $version = $version -replace '</strong></p>',''
     write-host version is -$version-
 }
 
