@@ -17,7 +17,7 @@ function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases
     $newt = ( $download_page.content -split '\n'  ) | Out-File "C:\projects\development\testing.log"
-    write-host $newt
+    write-host newt -$newt-
     $version = get-content ("C:\projects\development\testing.log") | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
