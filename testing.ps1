@@ -28,4 +28,8 @@ reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zon
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
 Test -releases 'http://www.videosoftdev.com/free-video-editor/download'
 
+$releases = 'http://www.videosoftdev.com/free-video-editor/download'
+$download_page = Invoke-WebRequest -Uri $releases
+write-host dp -$download_page-
+
 write-Host "This is the end Folks"
