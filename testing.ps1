@@ -14,9 +14,16 @@ $HTML.close
 }
 
 function Test( $releases ) {
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
-    #$releases = 'http://www.videosoftdev.com/free-video-editor/download'
+
+    $IE=new-object -com internetexplorer.application
+    $IE.navigate2( $releases )
+
+    $HTTP_Request = [System.Net.WebRequest]::Create( $releases )
+    $HTTP_Response = $HTTP_Request.GetResponse()
+
     $download_page = Invoke-WebRequest -Uri $releases
+    $newt = ( $download_page -split '\n'  )
+    write-host newt -$newt-
     $version = ( $download_page -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
