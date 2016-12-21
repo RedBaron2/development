@@ -17,7 +17,7 @@ function Test( $releases ) {
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
     #$releases = 'http://www.videosoftdev.com/free-video-editor/download'
     $download_page = Invoke-WebRequest -Uri $releases
-    $version = ( $download_page.Content -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
+    $version = ( $download_page.RawContent -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
     write-host B version is -$version-
