@@ -16,8 +16,10 @@ $HTML.close
 $releases = 'http://www.videosoftdev.com/free-video-editor/download'
 
 function Test {
-    $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
-    $version = $download_page.Content -split '\n' | sls 'Current version:' -Context 0,5 | out-string
+    $download_page = Invoke-WebRequest -Uri $releases
+    $version = ( $download_page.Content -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
+    $version = $version -replace '<p><strong>',""
+    $version = $version -replace '</strong></p>',""
     write-host version is -$version-
 }
 
