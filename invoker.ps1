@@ -1,4 +1,4 @@
-Clear-Host
-$Site = "http://www.computerperformance.co.uk"
+
+$Site = "http://www.videosoftdev.com/free-video-editor/download"
 $Test = Invoke-WebRequest $Site
-$Test | Get-Member
+Write-host content -$Test.Content-
