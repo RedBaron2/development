@@ -16,7 +16,8 @@ $HTML.close
 function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases | Out-File ".\testing.log"
-    write-host ".\testing.log"
+    $file = get-content (".\testing.log")
+    write-host $file
     $version = get-content (".\testing.log") | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
