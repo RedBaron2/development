@@ -18,10 +18,10 @@ $releases = 'http://www.videosoftdev.com/free-video-editor/download'
 function Test {
     $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
     $version = $download_page.Content -split '\n' | sls 'Current version:' -Context 0,5 | out-string
-
+    write-host version is -$version-
 }
 
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
 Test
-write-host version is -$version-
+
 write-Host "This is the end Folks"
