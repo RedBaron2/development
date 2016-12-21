@@ -23,8 +23,8 @@ function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases
     $newt = ( $download_page -split '\n'  )
-    write-host newt -$newt-
-    $version = ( $download_page -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
+    #write-host newt -$newt-
+    $version = $newt | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
     write-host B version is -$version-
