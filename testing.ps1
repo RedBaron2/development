@@ -16,13 +16,13 @@ $HTML.close
 function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases
-    $newt = ( $download_page.ParsedHtml -split "`n"  ) | Out-File "C:\projects\development\testing.log"
-    write-host newt -$newt-
-    $version = get-content ("C:\projects\development\testing.log") | where { $_ -match '<p><strong>' } | select -First 1
+    $newt = ( $download_page.AllElements -split '\n'  ) | where{ $_ -match 'File size:' } | select -first 2
+    Write-Host newt -$newt-
+    $version = $newt
     write-host A version is -$version-
-    $version = $version -replace '<p><strong>',''
+    $version = $version -replace '<P slick-uniqueid="253">File size:</P></DIV>',''
     write-host B version is -$version-
-    $version = $version -replace '</strong></p>',''
+    $version = $version -replace 'File size:',''
     write-host C version is -$version-
 
     $download_page.close
