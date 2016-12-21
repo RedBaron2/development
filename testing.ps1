@@ -1,6 +1,6 @@
 function Get-360TS-version( $URI ) {
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
-$URI = "https://www.360totalsecurity.com/en/features/360-total-security/"
+
 $HTML = Invoke-WebRequest -Uri $URI
 $try = ($HTML.ParsedHtml.getElementsByTagName('span') | Where{ $_.className -eq 'version' } ).innerText
 
@@ -13,9 +13,9 @@ return $CurrentVersion
 $HTML.close
 }
 
-function Test {
+function Test( $URI ) {
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
-    $releases = 'http://www.videosoftdev.com/free-video-editor/download'
+    #$releases = 'http://www.videosoftdev.com/free-video-editor/download'
     $download_page = Invoke-WebRequest -Uri $releases
     $version = ( $download_page.Content -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
     $version = $version -replace '<p><strong>',''
@@ -26,6 +26,6 @@ reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zon
 }
 
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
-Test
+Test -URI 'http://www.videosoftdev.com/free-video-editor/download'
 
 write-Host "This is the end Folks"
