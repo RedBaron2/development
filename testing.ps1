@@ -30,7 +30,7 @@ function Test( $releases ) {
     write-host B version is -$version-
     $version = $version -replace '</strong></p>',''
     write-host C version is -$version-
-reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v 1A10 /f | out-null
+
     $download_page.close
 }
 
