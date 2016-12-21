@@ -1,4 +1,3 @@
-
 # Test against this version of Node.js
 environment:
   nodejs_version: "0.10"
@@ -9,12 +8,11 @@ install:
   - ps: Install-Product node $env:nodejs_version
   # install modules
   - cinst chocolatey -y
-  #- cinst ie11 -fy
+  - cinst ie11 -fy
 
 # Post-install test scripts.
 test_script:
- 
-#- ps: .\testing.ps1
+
 - ps: .\invoker.ps1
 
   # Output useful info for debugging.
