@@ -18,18 +18,16 @@ reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\
     #$releases = 'http://www.videosoftdev.com/free-video-editor/download'
     $download_page = Invoke-WebRequest -Uri $releases
     $version = ( $download_page.Content -split '\n'  ) | where { $_ -match '<p><strong>' } | select -First 1
+    write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
+    write-host B version is -$version-
     $version = $version -replace '</strong></p>',''
-    write-host version is -$version-
+    write-host C version is -$version-
 reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v 1A10 /f | out-null
     $download_page.close
 }
 
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
 Test -releases 'http://www.videosoftdev.com/free-video-editor/download'
-
-$releases = 'http://www.videosoftdev.com/free-video-editor/download'
-$download_page = Invoke-WebRequest -Uri $releases
-write-host dp -$download_page-
 
 write-Host "This is the end Folks"
