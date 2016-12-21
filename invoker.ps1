@@ -1,6 +1,5 @@
 
-$Site = "http://www.videosoftdev.com/free-video-editor/download"
-$Test = ( Invoke-WebRequest $Site ).Content
-Write-host A content-$Test-
-$Test = $Test | where { $_ -match '<p><strong>' }
-Write-host content -$Test-
+$Site = "http://www.videosoftdev.com/free-video-editor"
+$Test = Invoke-WebRequest $Site
+$Testy= $Test.parsedhtml.GetElementsByTagName('p') | Where { $_ -match '<p><strong>Version' }
+Write-host Testy  -$Testy-
