@@ -13,7 +13,7 @@ return $CurrentVersion
 $HTML.close
 }
 
-function Test( $URI ) {
+function Test( $releases ) {
 reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
     #$releases = 'http://www.videosoftdev.com/free-video-editor/download'
     $download_page = Invoke-WebRequest -Uri $releases
@@ -26,6 +26,6 @@ reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zon
 }
 
 Get-360TS-version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
-Test -URI 'http://www.videosoftdev.com/free-video-editor/download'
+Test -releases 'http://www.videosoftdev.com/free-video-editor/download'
 
 write-Host "This is the end Folks"
