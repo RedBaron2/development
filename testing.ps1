@@ -16,7 +16,7 @@ $HTML.close
 function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases
-    $newt = ( $download_page.AllElements -split '`n'  ) | Where-Object { $_ -match 'slick-uniqueid="255"' } | select -first 1
+    $newt = ( $download_page.AllElements -split '`n'  ) | Where-Object { $_ -eq 'slick-uniqueid="255"' } | select -first 1
     Write-Host newt -$newt-
     $version = $newt
     write-host A version is -$version-
