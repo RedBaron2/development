@@ -16,10 +16,10 @@ $HTML.close
 function Test( $releases ) {
 
     $download_page = Invoke-WebRequest -Uri $releases
-    $newt = ( $download_page -split '\n'  ) | Out-File "${env:TEMP}\testing.log"
-    $file = get-content (".\testing.log")
+    $newt = ( $download_page -split '\n'  ) | Out-File "C:\projects\development\testing.log"
+    $file = get-content ("C:\projects\development\testing.log")
     write-host $file
-    $version = get-content (".\testing.log") | where { $_ -match '<p><strong>' } | select -First 1
+    $version = get-content ("C:\projects\development\testing.log") | where { $_ -match '<p><strong>' } | select -First 1
     write-host A version is -$version-
     $version = $version -replace '<p><strong>',''
     write-host B version is -$version-
