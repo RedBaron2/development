@@ -17,9 +17,7 @@ $download_page.ParsedHtml.getElementsByTagname("p") |%{
     
     $version = $resu.p4
     write-host A version is -$version-
-    $version = $version -replace '<STRONG slick-uniqueid="256">',''
-    write-host B version is -$version-
-    $version = $version -replace '<STRONG slick-uniqueid="255">',''
+    $version = $version -replace '<STRONG slick-uniqueid="\d\d\d">',''
     write-host B1 version is -$version-
     $version = $version -replace '</STRONG>',''
     write-host C version is -$version-
