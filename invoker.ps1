@@ -17,9 +17,9 @@ $download_page.ParsedHtml.getElementsByTagname("p") |%{
     
     $version = $resu.p4
     write-host A version is -$version-
-    $version = $version -replace '<STRONG slick-uniqueid="\d\d\d">',''
-    write-host B1 version is -$version-
     $version = $version -replace '</STRONG>',''
+    write-host B1 version is -$version-
+    $version = $version -replace '<STRONG slick-uniqueid="\d\d\d">',''
     write-host C version is -$version-
 reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v 1A10 /f | out-null
     $download_page.close
