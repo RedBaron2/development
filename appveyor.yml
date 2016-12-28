@@ -15,6 +15,7 @@ test_script:
 
 - ps: .\kis5.ps1
 - ps: .\invoker.ps1
+- ps: .\kso_test.ps1
 
   # Output useful info for debugging.
   #- node --version
