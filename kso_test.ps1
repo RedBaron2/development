@@ -1,5 +1,5 @@
 
-$start_time = Get-Date
+$start_time1 = Get-Date
 
 $os = Get-WmiObject -Class Win32_OperatingSystem
 $caption = $os.Caption
@@ -37,4 +37,4 @@ $releases = 'https://www.wps.com/office-free'
 
     return @{ URL32 = $url; Version = $version; packageName = $productName.ToLower() ; softwareName = $product.ToLower() ; description = $description }
 
-Write-host "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
+Write-host "Time taken: $((Get-Date).Subtract($start_time1).Seconds) second(s)"
