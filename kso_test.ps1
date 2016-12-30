@@ -1,4 +1,17 @@
 
+$start_time = Get-Date
+
+$os = Get-WmiObject -Class Win32_OperatingSystem
+$caption = $os.Caption
+write-host $caption
+
+
+# Get Operating System Info (no need for foreach)
+$sServer = "."
+
+$sOS =Get-WmiObject -class Win32_OperatingSystem
+
+$sOS | Select-Object Description, Caption, OSArchitecture, ServicePackMajorVersion | Format-List
 
 $releases = 'https://www.wps.com/office-free'
 
@@ -23,3 +36,5 @@ $releases = 'https://www.wps.com/office-free'
     $productName = $productName -replace('\s','-')
 
     return @{ URL32 = $url; Version = $version; packageName = $productName.ToLower() ; softwareName = $product.ToLower() ; description = $description }
+
+Write-host "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
