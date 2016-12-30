@@ -1,4 +1,4 @@
-
+$start_time = Get-Date
 
 function Get-KIS-parts ( $search , $URL , $a ) {
 $urlHost = iwr -Uri $URL
@@ -52,3 +52,4 @@ $vers = $urlFile -match('[\d+\.]{3,}(?=en_)') # this (?=en_) is not needed to ge
 $version = $matches[0]
 Write-Host outside version -$version-
 
+Write-host "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
