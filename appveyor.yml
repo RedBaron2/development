@@ -13,10 +13,10 @@ install:
 # Post-install test scripts.
 test_script:
 
-- ps: .\kis5.ps1
-#- ps: .\invoker.ps1
-- ps: .\kso_test.ps1
-#- ps: .\test\testing.ps1
+- ps: .\player0.ps1
+- ps: .\player1.ps1
+- ps: .\player2.ps1
+- ps: .\player3.ps1
 
   # Output useful info for debugging.
   #- node --version
