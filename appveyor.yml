@@ -15,11 +15,11 @@ test_script:
 
 #- ps: .\test\testing.ps1
 - ps: .\player3.ps1
-- ps: cd .\automatic\flashplayeractivex
+- ps: cd automatic\flashplayeractivex
 - ps: .\update.ps1
-- ps: cd .\automatic\flashplayerplugin
+- ps: cd automatic\flashplayerplugin
 - ps: .\update.ps1
-- ps: cd .\automatic\flashplayerppapi
+- ps: cd automatic\flashplayerppapi
 - ps: .\update.ps1
 
   # Output useful info for debugging.
