@@ -14,10 +14,10 @@ install:
 test_script:
 
 - ps: .\test\testing.ps1
+- ps: .\player3.ps1
 #- ps: .\automatic\flashplayeractivex\update.ps1
 #- ps: .\automatic\flashplayerplugin\update.ps1
-#- ps: .\automatic\flashplayerppapi\update.ps1
-#- ps: .\automatic\flashplayer
+- ps: .\automatic\flashplayerppapi\update.ps1
 
   # Output useful info for debugging.
   #- node --version
