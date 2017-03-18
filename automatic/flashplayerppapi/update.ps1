@@ -1,5 +1,5 @@
 import-module au
-. "../..\scripts\Get-Padded-Version.ps1"
+. "..\..\scripts\Get-Padded-Version.ps1"
 
 $releases = "https://get.adobe.com/en/flashplayer/" # URL to for GetLatest
 $padVersionUnder = '24.0.1'
