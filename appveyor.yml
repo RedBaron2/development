@@ -17,10 +17,8 @@ test_script:
 - ps: .\player3.ps1
 - ps: cd automatic\flashplayeractivex
 - ps: .\update.ps1
-- ps: . "$PSScriptRoot\..\flashplayerplugin"
-- ps: .\update.ps1
-- ps: . "$PSScriptRoot\..\flashplayerppapi"
-- ps: .\update.ps1
+- ps: . "$PSScriptRoot\..\flashplayerplugin\update.ps1"
+- ps: . "$PSScriptRoot\..\flashplayerppapi\update.ps1"
 
   # Output useful info for debugging.
   #- node --version
