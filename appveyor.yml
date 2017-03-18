@@ -17,8 +17,10 @@ test_script:
 - ps: .\player3.ps1
 - ps: cd automatic\flashplayeractivex
 - ps: .\update.ps1
+- ps: ..\..\
 - ps: cd automatic\flashplayerplugin
 - ps: .\update.ps1
+- ps: ..\..\
 - ps: cd automatic\flashplayerppapi
 - ps: .\update.ps1
 
