@@ -13,7 +13,7 @@ install:
 # Post-install test scripts.
 test_script:
 
-- ps: .\test\testing.ps1
+#- ps: .\test\testing.ps1
 - ps: .\player3.ps1
 #- ps: .\automatic\flashplayeractivex\update.ps1
 #- ps: .\automatic\flashplayerplugin\update.ps1
