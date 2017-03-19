@@ -8,12 +8,15 @@ install:
   #- ps: Install-Product node $env:nodejs_version
   # install modules
   - cinst chocolatey -y
-  - cinst au -y
+  #- cinst au -y
 
 # Post-install test scripts.
 test_script:
 
-#- ps: .\test\testing.ps1
+- ps: |
+    git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
+    . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
+    
 - ps: .\player3.ps1
 - ps: cd automatic\flashplayeractivex
 - ps: .\update.ps1
