@@ -17,13 +17,29 @@ test_script:
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
     . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     
-- ps: .\player3.ps1
-- ps: cd automatic\flashplayeractivex
-- ps: .\update.ps1
-- ps: cd ..\flashplayerplugin
-- ps: .\update.ps1
-- ps: cd ..\flashplayerppapi
-- ps: .\update.ps1
+
+- ps: |
+    $ErrorActionPreference = 'Continue'
+    if ($Env:APPVEYOR_PROJECT_NAME  -like '*test*') { ./test_all.ps1 "random $Env:au_test_groups"; return }
+
+    if ( ($Env:APPVEYOR_SCHEDULED_BUILD -ne 'true') -and ($Env:APPVEYOR_FORCED_BUILD -ne 'true') ) {
+        switch -regex ($Env:APPVEYOR_REPO_COMMIT_MESSAGE)
+        {
+            '\[AU (.+?)\]'   { $forced = $Matches[1] }
+
+            '\[PUSH (.+?)\]' {
+                $packages = $Matches[1] -split ' '
+                Write-Host "PUSHING PACKAGES: $packages"
+                foreach ($package in $packages) {
+                    Write-Host ("{0}`n{1}`n" -f ('-'*60), "PACKAGE: $package")
+                    $package_dir = ls -recurse | ? { $_.Name -eq "$package.nuspec"} | select -First 1 | % Directory
+                    if (!$package_dir) { Write-Warning "Can't find package '$package'"; continue }
+                    pushd $package_dir; choco pack; Push-Package; popd
+                }
+                return
+            }
+        }
+    }
 
   # Output useful info for debugging.
   #- node --version
