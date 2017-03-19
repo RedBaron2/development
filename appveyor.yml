@@ -18,10 +18,10 @@ test_script:
     . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     
 
-- ps: cd .\automatic
-- ps: foreach ($d in $PSScriptRoot){
-$d\update.ps1
-}
+- ps: |
+Get-ChildItem */* | 
+where {$_.name -eq "update.ps1"} | 
+foreach { cd $_.DirectoryName; mvn clean compile; cd ..}
 
   # Output useful info for debugging.
   #- node --version
