@@ -18,14 +18,18 @@ function global:au_SearchReplace {
 function global:au_GetLatest {
 
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-$stable_builds = @() # Intialize Stable Array
-$beta_builds = @() # Intialize Beta Array
+# Intialize Stable Array
+$stable_builds = @();
+# Intialize Beta Array
+$beta_builds = @();
 $HTML.Links | foreach {
 if ($_.href -match "stable" ) {
-$stable_builds += $_.href # Build the Stable Array by Adding all matches
+# Build the Stable Array by Adding all matches
+$stable_builds += $_.href;
 }
 if ($_.href -match "beta" ) {
-$beta_builds += $_.href # Build the Beta Array by Adding all matches
+# Build the Beta Array by Adding all matches
+$beta_builds += $_.href;
 }
 }
 $Stable_latestVersion = $stable_builds[0]
