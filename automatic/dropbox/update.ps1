@@ -17,9 +17,6 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
 
-# Get Start Time
-$startDTM = (Get-Date)
-
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
 # Intialize Stable Array
 $stable_builds = @();
@@ -46,12 +43,8 @@ $stable = $stable -replace ('-', '.')
 $beta = $beta -replace ('Beta-Build-', '' )
 $beta = $beta -replace ('-', '.')
 $HTML.close
-# Get End Time
-$endDTM = (Get-Date)
-# Echo Time elapsed
-$Time = "Elapsed Time: $(($endDTM-$startDTM).totalseconds) seconds"
 
-  return @{ URL32 = $url; Version = $stable; Time = $Time }
+  return @{ URL32 = $url; Version = $stable; }
 }
 
 update -ChecksumFor 32
