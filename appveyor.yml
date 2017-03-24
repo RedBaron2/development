@@ -18,7 +18,7 @@ test_script:
     . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     
 - ps: cd .\automatic\dropbox
-- ps: .update.ps1
+- ps: .\update.ps1
 
 # - ps: .\update_all.ps1
 
