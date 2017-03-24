@@ -17,8 +17,8 @@ test_script:
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
     . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     
-#- ps: cd .\automatic\dropbox
-#- ps: .\update.ps1
+# - ps: cd .\automatic\dropbox
+# - ps: .\update.ps1
 
  - ps: .\update_all.ps1
 
