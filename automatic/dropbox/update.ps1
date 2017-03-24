@@ -17,7 +17,9 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
 
-#reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
+# Get Start Time
+$startDTM = (Get-Date)
+
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
 # Intialize Stable Array
 $stable_builds = @();
@@ -43,11 +45,13 @@ $stable = $stable -replace ('Stable-Build-', '' )
 $stable = $stable -replace ('-', '.')
 $beta = $beta -replace ('Beta-Build-', '' )
 $beta = $beta -replace ('-', '.')
-#reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v 1A10 /f | out-null
 $HTML.close
-$url = "https://dl-web.dropbox.com/u/17/Dropbox%20${stable}.exe"
+# Get End Time
+$endDTM = (Get-Date)
+# Echo Time elapsed
+$Time = "Elapsed Time: $(($endDTM-$startDTM).totalseconds) seconds"
 
-  return @{ URL32 = $url; Version = $stable; }
+  return @{ URL32 = $url; Version = $stable; Time = $Time }
 }
 
 update -ChecksumFor 32
