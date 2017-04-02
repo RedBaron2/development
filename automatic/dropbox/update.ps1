@@ -17,22 +17,12 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
 
+
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-# Intialize Stable Array
-$stable_builds = @();
-# Intialize Beta Array
-$beta_builds = @();
-$HTML.Links | foreach {
-if ($_.href -match "stable" ) {
-# Build the Stable Array by Adding all matches
-$stable_builds += $_.href;
-}
-}
-$Stable_latestVersion = $stable_builds[0]
-$Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
-$stable = $Stable_latestVersion[3]
-$stable = $stable -replace ('Stable-Build-', '' )
-$stable = $stable -replace ('-', '.')
+$links = $HTML.Links | where{ ($_.href -match "stable" ) } | Select -first 1
+$link = $links.href -split ( '\/' ) | Select -Last 3 -Skip 2
+$ver = $link -replace('(([A-Z])\w+\-)','') | Select -Last 1
+$stable = $ver -replace ('-', '.')
 $HTML.close
 $url = "https://dl-web.dropbox.com/u/17/Dropbox%20${stable}.exe"
 
