@@ -1,7 +1,7 @@
 
 import-module au
 
-$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
+#$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
 
 
 function global:au_SearchReplace {
@@ -29,4 +29,4 @@ function global:au_GetLatest {
  # return @{ URL32 = $url; Version = $stable; }
 }
 
-update
+#update
