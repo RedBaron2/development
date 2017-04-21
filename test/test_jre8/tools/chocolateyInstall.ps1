@@ -110,8 +110,8 @@ try {
     if (($thisJreInstalledHash[0]) -or ($thisJreInstalledHash[1])) {
       Write-Output "Java Runtime Environment $version is already installed. Skipping download and installation to avoid 1603 errors."
     } else {
-	  # Install-ChocolateyPackage $packageArgs.packageName $installerType $installArgs $packageArgs.url $packageArgs.url64bit
-      Install-ChocolateyPackage $packageName $installerType $installArgs $url $url64
+	  Install-ChocolateyPackage $packageArgs.packageName $installerType $installArgs $packageArgs.url $packageArgs.url64bit
+      # Install-ChocolateyPackage $packageName $installerType $installArgs $url $url64
     }
 
   } else {
@@ -126,8 +126,8 @@ try {
     } 
     elseif ($exclude -ne "32") 
     {
-	  # Install-ChocolateyPackage $packageArgs.packageName $packageArgs.fileType $packageArgs.silentArgs $packageArgs.url $packageArgs.checksum $packageArgs.checksumType
-      Install-ChocolateyPackage $packageName $installerType $installArgs $url -checksum $checksum32 -checksumtype 'sha256'
+	  Install-ChocolateyPackage $packageArgs.packageName $packageArgs.fileType $packageArgs.silentArgs $packageArgs.url -checksum $packageArgs.checksum -checksumtype $packageArgs.checksumType
+      # Install-ChocolateyPackage $packageName $installerType $installArgs $url -checksum $checksum32 -checksumtype 'sha256'
     } 
     else 
     {
@@ -147,8 +147,8 @@ try {
         # Here $url64 is used twice to obtain the correct message from Chocolatey
         # that it installed the 64-bit version, otherwise it would display 32-bit,
         # regardless of the actual bitness of the software.
-		# Install-ChocolateyPackage $packageArgs.packageName $packageArgs.installerType $packageArgs.silentArgs64 $packageArgs.url64bit $packageArgs.url64bit $packageArgs.checksum64 $packageArgs.checksumType64
-        Install-ChocolateyPackage $packageName $installerType $installArgs64 $url64 $url64 -checksum64 $checksum64 -checksumtype64 'sha256'
+		Install-ChocolateyPackage $packageArgs.packageName $packageArgs.installerType $packageArgs.silentArgs64 $packageArgs.url64bit $packageArgs.url64bit  -checksum64 $packageArgs.checksum64 -checksumtype64 $packageArgs.checksumType64
+        # Install-ChocolateyPackage $packageName $installerType $installArgs64 $url64 $url64 -checksum64 $checksum64 -checksumtype64 'sha256'
       } 
       else 
       {
