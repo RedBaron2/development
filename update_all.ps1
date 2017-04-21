@@ -1,9 +1,10 @@
 
-# cd .\automatic
+cd .\automatic
+updateall
 # Get-ChildItem */* | 
 # where {$_.name -eq "update.ps1"} | 
 # foreach { cd $_.DirectoryName; .\update.ps1; cd ..}
 
-# cd ..
-# cd .\test
+cd ..
+cd .\test
 updateall
