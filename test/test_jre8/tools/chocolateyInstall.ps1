@@ -6,7 +6,7 @@ try {
   packageName            = 'jre8'
   fileType               = 'exe'
   url                    = 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220313_d54c1d3a095b4ff2b6607d096fa80163'
-  url64		             = 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220315_d54c1d3a095b4ff2b6607d096fa80163'
+  url64		         = 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220315_d54c1d3a095b4ff2b6607d096fa80163'
   checksum               = '73BF9257E2F4CA73318D3C23181CBE1E93665BF13FDA7B956252A70B975BCF8B'
   checksum64             = '5083590A30BF069E947DCE8968221AF21B39836FE013B111DE70D6107B577CD3'
   checksumType           = 'sha256'
@@ -173,6 +173,6 @@ try {
      Start-ChocolateyProcessAsAdmin "/qn /norestart /X$64" -exeToRun "msiexec.exe" -validExitCodes @(0,1605,3010)
   }
 } catch {
-  #Write-ChocolateyFailure $packageName $($_.Exception.Message)
+  Write-ChocolateyFailure $packageName $($_.Exception.Message)
   throw
 }
