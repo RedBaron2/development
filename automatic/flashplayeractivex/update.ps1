@@ -2,7 +2,7 @@
 import-module au
 . "$PSScriptRoot\..\..\scripts\Get-Padded-Version.ps1"
 
-$releases = "https://get.adobe.com/en/flashplayer/" # URL to for GetLatest
+$releases = "http://fpdownload2.macromedia.com/get/flashplayer/update/current/xml/version_en_win_pl.xml" # URL to for GetLatest
 $padVersionUnder = '24.0.1'
 
 function global:au_BeforeUpdate {
