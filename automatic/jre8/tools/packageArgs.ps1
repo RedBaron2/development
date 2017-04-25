@@ -1,11 +1,11 @@
 # Due to a big in AU. This package requires that all package Arguments be in this hashtable
 
 $packageArgs = @{
-	oldVersion		= '8.0.1210.13'
-	version			= '8.0.1310.11'
+	oldVersion		= ''
+	version			= '8.0.1210.13'
 	packageName		= 'jre8'
 	fileType		= 'exe'
-	url				= 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220313_d54c1d3a095b4ff2b6607d096fa80163'
+	url			= 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220313_d54c1d3a095b4ff2b6607d096fa80163'
 	url64bit		= 'http://javadl.oracle.com/webapps/download/AutoDL?BundleId=220315_d54c1d3a095b4ff2b6607d096fa80163'
 	silentArgs		= '/s REBOOT=0 SPONSORS=0 REMOVEOUTOFDATEJRES=1'
 	validExitCodes	= @(0)
