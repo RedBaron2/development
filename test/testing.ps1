@@ -1,20 +1,63 @@
-function Get-Version( $URI ) {
-reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /t REG_DWORD /v 1A10 /f /d 0 | out-null
-#$URI = “https://www.360totalsecurity.com/en/features/360-total-security/“
-$HTML = Invoke-WebRequest -Uri $URI
-$try = $HTML.Content -split "`n" | sls 'Current version' -Context 2
-Write-Host -$try-
-pause
-$try = $try -replace( ' : ',' = ')
-$techy =  ConvertFrom-StringData -StringData $try
-$CurrentVersion = ( $techy.Version )
-#Write-Host $techy.Version
-reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\3" /v 1A10 /f | out-null
-return $CurrentVersion
-$HTML.close
+
+$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
+
+$HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
+$stable_builds = @()
+$beta_builds = @()
+$HTML.Links | foreach {
+if ($_.href -match "stable" ) {
+$stable_builds += $_.href
+}
+if ($_.href -match "beta" ) {
+$beta_builds += $_.href
+}
+}
+#Write-Host $beta_builds[2]
+function stable-builds() {
+$Stable_latestVersion = $stable_builds
+$Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
+#$stable = $Stable_latestVersion[3]
+$stable = @()
+    foreach( $_ in $Stable_latestVersion ) {
+    $_ = $_ -replace ('Stable-Build-', '' )
+    $_ = $_ -replace ("\-\D+",'')
+    $_ = $_ -replace ('-', '.')
+    $_ = $_ -replace ('t5','')
+    $_ = $_ -replace ('m','')
+    $_ = $_ -replace ('[a-z]\w+','')
+    $_ = $_ -replace ('\d+\#[M]\d+','')
+            if (( $_ -ge '27.3.21' ) -and ( $_ -le (beta-builds) )) {
+            $stable = $_
+            #Write-Host "we are .$_. "
+            break;
+            }
+    }
+	return $stable
+}
+function beta-builds() {
+$Beta_latestVersion = $beta_builds
+$Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
+$beta = @()
+	foreach( $_ in $Beta_latestVersion ) {
+	$_ = $_ -replace ('Beta-Build-', '' )
+	$_ = $_ -replace ("\-\D+",'')
+	$_ = $_ -replace ('-', '.')
+	$_ = $_ -replace ('t5','')
+	$_ = $_ -replace ('[a-z]\w+','')
+	$_ = $_ -replace ('\d+\#[M]\d+','')
+	   if ( $_ -ge '27.3.21' ) {
+			if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
+			$beta = $_
+			#Write-Host "we are .$_. "
+			break;
+			}
+		}
+	}
+	return $beta
 }
 
+Write-Host stable (stable-builds) beta (beta-builds)
 
-Get-Version -URI "https://www.360totalsecurity.com/en/features/360-total-security/"
-
-Get-Version -URI "http://www.videosoftdev.com/free-video-editor/download"
+$HTML.close
+Write-Host "17-06-07 stable 27.4.22"
+Write-Host "17-06-07 beta 28.3.12"
