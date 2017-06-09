@@ -19,14 +19,62 @@ function global:au_GetLatest {
 
 
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-$links = $HTML.Links | where{ ($_.href -match "stable" ) } | Select -first 1
-$link = $links.href -split ( '\/' ) | Select -Last 3 -Skip 2
-$ver = $link -replace('(([A-Z])\w+\-)','') | Select -Last 1
-$stable = $ver -replace ('-', '.')
-$HTML.close
+$stable_builds = @();
+$beta_builds = @();
+$HTML.Links | foreach {
+if ($_.href -match "stable" ) {
+$stable_builds += $_.href
+}
+if ($_.href -match "beta" ) {
+$beta_builds += $_.href
+}
+}
+#Write-Host $beta_builds[2]
+function stable-builds() {
+$Stable_latestVersion = $stable_builds
+$Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
+#$stable = $Stable_latestVersion[3]
+$stable = @()
+    foreach( $_ in $Stable_latestVersion ) {
+    $_ = $_ -replace ('Stable-Build-', '' )
+    $_ = $_ -replace ("\-\D+",'')
+    $_ = $_ -replace ('-', '.')
+    $_ = $_ -replace ('t5','')
+    $_ = $_ -replace ('m','')
+    $_ = $_ -replace ('[a-z]\w+','')
+    $_ = $_ -replace ('\d+\#[M]\d+','')
+            if (( $_ -ge '27.3.21' ) -and ( $_ -le (beta-builds) )) {
+            $stable = $_
+            #Write-Host "we are .$_. "
+            break;
+            }
+    }
+	return $stable
+}
+function beta-builds() {
+$Beta_latestVersion = $beta_builds
+$Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
+$beta = @()
+	foreach( $_ in $Beta_latestVersion ) {
+	$_ = $_ -replace ('Beta-Build-', '' )
+	$_ = $_ -replace ("\-\D+",'')
+	$_ = $_ -replace ('-', '.')
+	$_ = $_ -replace ('t5','')
+	$_ = $_ -replace ('[a-z]\w+','')
+	$_ = $_ -replace ('\d+\#[M]\d+','')
+	   if ( $_ -ge '27.3.21' ) {
+			if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
+			$beta = $_
+			#Write-Host "we are .$_. "
+			break;
+			}
+		}
+	}
+	return $beta
+}
 $url = "https://dl-web.dropbox.com/u/17/Dropbox%20${stable}.exe"
 
- return @{ URL32 = $url; Version = $stable; }
+ return @{ URL32 = $url; Version = (stable-builds); }
 }
 
 update
