@@ -7,11 +7,11 @@ $beta_builds = @()
 #$HTML.Links | foreach {
 $file_links = ( Get-Content "C:\Users\appveyor\AppData\Local\Temp\drpbx.log" )
 $file_links | foreach {
-if ($_.href -match "stable" ) {
-$stable_builds += $_.href
+if ($_ -match "stable" ) {
+$stable_builds += $_
 }
-if ($_.href -match "beta" ) {
-$beta_builds += $_.href
+if ($_ -match "beta" ) {
+$beta_builds += $_
 }
 }
 $re_dash = '-'
