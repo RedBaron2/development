@@ -40,8 +40,8 @@ $stable = @()
             break;
             }
     }
-	return $stable
 	posh-tee "ending stable"
+	return $stable
 }
 function beta-builds() {
 posh-tee "starting beta"
@@ -58,8 +58,8 @@ $beta = @()
 			}
 		}
 	}
+	posh-tee "ending beta"
 	return $beta
-		posh-tee "ending beta"
 }
 
 Write-Host stable (stable-builds) beta (beta-builds)
