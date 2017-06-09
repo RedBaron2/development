@@ -1,11 +1,11 @@
 
 $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
 
-$HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File "${env:temp}\drpbx.log"
+$HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File "C:\Users\appveyor\AppData\Local\Temp\drpbx.log"
 $stable_builds = @()
 $beta_builds = @()
 #$HTML.Links | foreach {
-$file_links = ( Get-Content "${env:temp}\drpbx.log" )
+$file_links = ( Get-Content "C:\Users\appveyor\AppData\Local\Temp\drpbx.log" )
 $file_links | foreach {
 if ($_.href -match "stable" ) {
 $stable_builds += $_.href
