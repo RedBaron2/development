@@ -1,12 +1,12 @@
-$ErrorActionPreference = "silentlycontinue"
+#$ErrorActionPreference = "silentlycontinue"
 $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
-
+set-alias posh-tee write-host
 $drpbx_log = "${env:temp}\drpbx.log"
 $HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File $drpbx_log
 $stable_builds = @()
 $beta_builds = @()
-#$HTML.Links | foreach {
 $file_links = ( Get-Content $drpbx_log )
+posh-tee "got the file_links"
 $file_links | foreach {
 if ($_ -match "stable" ) {
 $stable_builds += $_
@@ -15,6 +15,7 @@ if ($_ -match "beta" ) {
 $beta_builds += $_
 }
 }
+posh-tee "beta and stable lines"
 $re_dash = '-'
 $re_dashndigits = "\-\D+"
 $re_t5 = 't5'
@@ -26,6 +27,7 @@ $re_stable = 'Stable-'
 $re_beta = 'Beta-'
 $re_build = 'Build-'
 function stable-builds() {
+posh-tee "starting stable"
 $Stable_latestVersion = $stable_builds
 $Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
 #$stable = $Stable_latestVersion[3]
@@ -39,8 +41,10 @@ $stable = @()
             }
     }
 	return $stable
+	posh-tee "ending stable"
 }
 function beta-builds() {
+posh-tee "starting beta"
 $Beta_latestVersion = $beta_builds
 $Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
 $beta = @()
@@ -55,6 +59,7 @@ $beta = @()
 		}
 	}
 	return $beta
+		posh-tee "ending beta"
 }
 
 Write-Host stable (stable-builds) beta (beta-builds)
