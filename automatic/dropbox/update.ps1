@@ -72,9 +72,10 @@ $beta = @()
 	}
 	return $beta
 }
-$url = "https://dl-web.dropbox.com/u/17/Dropbox%20(stable-builds).exe"
+$version = (stable-builds);
+$url = "https://dl-web.dropbox.com/u/17/Dropbox%20${version}.exe"
 
- return @{ URL32 = $url; Version = (stable-builds); }
+ return @{ URL32 = $url; Version = $version; }
 }
 
 update
