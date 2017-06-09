@@ -1,11 +1,12 @@
 $ErrorActionPreference = "silentlycontinue"
 $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
 
-$HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File "C:\Users\appveyor\AppData\Local\Temp\drpbx.log"
+$drpbx_log = "${env:temp}\drpbx.log"
+$HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File $drpbx_log
 $stable_builds = @()
 $beta_builds = @()
 #$HTML.Links | foreach {
-$file_links = ( Get-Content "C:\Users\appveyor\AppData\Local\Temp\drpbx.log" )
+$file_links = ( Get-Content $drpbx_log )
 $file_links | foreach {
 if ($_ -match "stable" ) {
 $stable_builds += $_
