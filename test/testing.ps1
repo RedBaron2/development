@@ -1,4 +1,4 @@
-
+$ErrorActionPreference = "silentlycontinue"
 $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
 
 $HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File "C:\Users\appveyor\AppData\Local\Temp\drpbx.log"
