@@ -1,3 +1,6 @@
+
+$Stopwatch = [system.diagnostics.stopwatch]::StartNew()
+
 #$ErrorActionPreference = "silentlycontinue"
 $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
 set-alias posh-tee write-host
@@ -6,7 +9,8 @@ $HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File $
 $stable_builds = @()
 $beta_builds = @()
 $file_links = ( Get-Content $drpbx_log )
-posh-tee "got the file_links"
+$timer = $Stopwatch.ElapsedMilliseconds
+posh-tee "got the file_links -$timer-"
 $file_links | foreach {
 if ($_ -match "stable" ) {
 $stable_builds += $_
@@ -15,7 +19,8 @@ if ($_ -match "beta" ) {
 $beta_builds += $_
 }
 }
-posh-tee "beta and stable lines"
+$timer = $Stopwatch.ElapsedMilliseconds
+posh-tee "beta and stable lines -$timer-"
 $re_dash = '-'
 $re_dashndigits = "\-\D+"
 $re_t5 = 't5'
@@ -27,7 +32,8 @@ $re_stable = 'Stable-'
 $re_beta = 'Beta-'
 $re_build = 'Build-'
 function stable-builds() {
-posh-tee "starting stable"
+$timer = $Stopwatch.ElapsedMilliseconds
+posh-tee "starting stable -$timer-"
 $Stable_latestVersion = $stable_builds
 $Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
 #$stable = $Stable_latestVersion[3]
@@ -40,11 +46,13 @@ $stable = @()
             break;
             }
     }
-	posh-tee "ending stable"
+$timer = $Stopwatch.ElapsedMilliseconds
+	posh-tee "ending stable -$timer-"
 	return $stable
 }
 function beta-builds() {
-posh-tee "starting beta"
+$timer = $Stopwatch.ElapsedMilliseconds
+posh-tee "starting beta -$timer-"
 $Beta_latestVersion = $beta_builds
 $Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
 $beta = @()
@@ -58,12 +66,20 @@ $beta = @()
 			}
 		}
 	}
-	posh-tee "ending beta"
+$timer = $Stopwatch.ElapsedMilliseconds
+	posh-tee "ending beta -$timer-"
 	return $beta
 }
 
-Write-Host stable (stable-builds) beta (beta-builds)
+posh-tee "A stable $fini_stable beta $fini_beta"
+$fini_stable = (stable-builds)
+$fini_beta = (beta-builds)
+$timer = $Stopwatch.ElapsedMilliseconds
+posh-tee "stable $fini_stable beta $fini_beta -$timer-"
 
 $HTML.close
 Write-Host "17-06-07 stable 27.4.22"
 Write-Host "17-06-07 beta 28.3.12"
+$Stopwatch.Stop()
+
+Write-Host "This script took $($Stopwatch.Elapsed.TotalMinutes) milliseconds to run"
