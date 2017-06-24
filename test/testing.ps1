@@ -1,83 +1,55 @@
 
 $Stopwatch = [system.diagnostics.stopwatch]::StartNew()
 
-#$ErrorActionPreference = "silentlycontinue"
-$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
-set-alias posh-tee write-host
-$drpbx_log = "${env:temp}\drpbx.log"
-$HTML = ( Invoke-WebRequest -UseBasicParsing -Uri $releases ).Links | Out-File $drpbx_log
-$stable_builds = @()
-$beta_builds = @()
-$file_links = ( Get-Content $drpbx_log )
-$timer = $Stopwatch.ElapsedMilliseconds
-posh-tee "got the file_links -$timer-"
-$file_links | foreach {
-if ($_ -match "stable" ) {
-$stable_builds += $_
-}
-if ($_ -match "beta" ) {
-$beta_builds += $_
-}
-}
-$timer = $Stopwatch.ElapsedMilliseconds
-posh-tee "beta and stable lines -$timer-"
-$re_dash = '-'
-$re_dashndigits = "\-\D+"
-$re_t5 = 't5'
-$re_abc = '[a-z]\w+'
-$re_num_M = '\d+\#[M]\d+'
-$re_dot = '.'
-$re_non = ''
-$re_stable = 'Stable-'
-$re_beta = 'Beta-'
-$re_build = 'Build-'
-function stable-builds() {
-$timer = $Stopwatch.ElapsedMilliseconds
-posh-tee "starting stable -$timer-"
-$Stable_latestVersion = $stable_builds
-$Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
-#$stable = $Stable_latestVersion[3]
-$stable = @()
-    foreach( $_ in $Stable_latestVersion ) {
-    $_ = $_ -replace ( ($re_stable + $re_build), $re_non ) -replace ( $re_dashndigits , $re_non ) -replace ( $re_dash , $re_dot ) -replace ( $re_t5 , $re_non ) -replace ( $re_abc , $re_non ) -replace ( $re_num_M , $re_non ) -replace ('m', $re_non )
-            if (( $_ -ge '27.3.21' ) -and ( $_ -le (beta-builds) )) {
-            $stable = $_
-            #Write-Host "we are .$_. "
-            break;
-            }
+
+function global:au_GetLatest {
+    $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
+    $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
+    $stable_builds = @()
+    $beta_builds = @()
+    $HTML.Links | foreach {
+  	  if ($_.href -match "stable" ) { $stable_builds += $_.href }
+  	  if ($_.href -match "beta" ) { $beta_builds += $_.href }
     }
-$timer = $Stopwatch.ElapsedMilliseconds
-	posh-tee "ending stable -$timer-"
-	return $stable
+    $re_dash = '-'; $re_dashndigits = "\-\D+"; $re_t5 = 't5'; $re_abc = '[a-z]\w+'; $re_num_M = '\d+\#[M]\d+';
+    $re_dot = '.'; $re_non = ''; $re_stable = 'Stable-'; $re_beta = 'Beta-'; $re_build = 'Build-';
+	$beta_version =  ( drpbx-builds -hrefs $beta_builds -beta_build $true )
+	$stable_version = ( drpbx-builds -hrefs $stable_builds -beta_version $beta_version )
+    $downloadUrl = "https://dl-web.dropbox.com/u/17/Dropbox%20${stable_version}.exe"
+    $beta_downloadUrl = "https://dl-web.dropbox.com/u/17/Dropbox%20${beta_version}.exe"
+
+    return @{ URL32 = $downloadUrl; Version = $stable_version; URL32_b = $beta_downloadUrl; Version_b = $beta_version }
 }
-function beta-builds() {
-$timer = $Stopwatch.ElapsedMilliseconds
-posh-tee "starting beta -$timer-"
-$Beta_latestVersion = $beta_builds
-$Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
-$beta = @()
-	foreach( $_ in $Beta_latestVersion ) {
-	$_ = $_ -replace ( ($re_beta + $re_build), $re_non ) -replace ( $re_dashndigits , $re_non ) -replace ($re_dash , $re_dot ) -replace ( $re_t5 , $re_non ) -replace ($re_abc  , $re_non ) -replace ( $re_num_M , $re_non )
-	   if ( $_ -ge '27.3.21' ) {
+
+function drpbx-builds {
+	param(
+		[string]$hrefs,
+		[string]$beta_version,
+		[bool]$beta_build
+	)
+    $links = $hrefs
+    $links = $links -split ( '\/' ); $build = @()
+	$build_version = @{$true=($re_beta + $re_build);$false=($re_stable + $re_build)}[( ($beta_build) )]
+    foreach( $_ in $links ) {
+     $_ = $_ -replace ( ($build_version), $re_non ) -replace ( $re_dashndigits , $re_non ) -replace ($re_dash , $re_dot ) -replace ( $re_t5 , $re_non ) -replace ($re_abc  , $re_non ) -replace ( $re_num_M , $re_non )
+		if (( $beta_build )) {
+	    if ( $_ -ge '27.3.21' ) {
 			if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
-			$beta = $_
-			#Write-Host "we are .$_. "
+			$build = $_
 			break;
 			}
 		}
-	}
-$timer = $Stopwatch.ElapsedMilliseconds
-	posh-tee "ending beta -$timer-"
-	return $beta
+		} else {
+            $_ = $_  -replace ('m', $re_non )
+			if (( $_ -ge '27.3.21' ) -and ( $_ -le $beta_version )) {
+			$build = $_
+			break;
+			}
+		}
+    }
+	return $build
 }
-
-posh-tee "A stable $fini_stable beta $fini_beta"
-$fini_stable = (stable-builds)
-$fini_beta = (beta-builds)
-$timer = $Stopwatch.ElapsedMilliseconds
-posh-tee "stable $fini_stable beta $fini_beta -$timer-"
-
-$HTML.close
+global:au_GetLatest
 Write-Host "17-06-07 stable 27.4.22"
 Write-Host "17-06-07 beta 28.3.12"
 $Stopwatch.Stop()
