@@ -8,6 +8,6 @@ $ErrorActionPreference = "silentlycontinue"
 
 #cd ..
 cd .\test
-.\drpbx_timer.ps1
+#.\drpbx_timer.ps1
 .\testing.ps1
 # updateall
