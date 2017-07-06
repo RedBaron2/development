@@ -1,55 +1,50 @@
 
 $Stopwatch = [system.diagnostics.stopwatch]::StartNew()
 
-
-function global:au_GetLatest {
+function drpbx-compare {
+	param(
+		[string]$_version,
+		[string]$build = 'stable',
+		[bool]$_build
+	)
     $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
     $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-    $stable_builds = @()
-    $beta_builds = @()
+    $hrefs = @()
     $HTML.Links | foreach {
-  	  if ($_.href -match "stable" ) { $stable_builds += $_.href }
-  	  if ($_.href -match "beta" ) { $beta_builds += $_.href }
+  	  if ($_.href -match $build ) { $hrefs += $_.href }
     }
-    $re_dash = '-'; $re_dashndigits = "\-\D+"; $re_t5 = 't5'; $re_abc = '[a-z]\w+'; $re_num_M = '\d+\#[M]\d+';
-    $re_dot = '.'; $re_non = ''; $re_stable = 'Stable-'; $re_beta = 'Beta-'; $re_build = 'Build-';
-	$beta_version =  ( drpbx-builds -hrefs $beta_builds -beta_build $true )
-	$stable_version = ( drpbx-builds -hrefs $stable_builds -beta_version $beta_version )
-    $downloadUrl = "https://dl-web.dropbox.com/u/17/Dropbox%20${stable_version}.exe"
-    $beta_downloadUrl = "https://dl-web.dropbox.com/u/17/Dropbox%20${beta_version}.exe"
-
-    return @{ URL32 = $downloadUrl; Version = $stable_version; URL32_b = $beta_downloadUrl; Version_b = $beta_version }
+    $re_dash = '-'; $re_dot = '.'; $re_non = ''; $re_build = $build + "-Build-";
+    $version = ( drpbx-builds -hrefs $hrefs -testVersion $_version -_build $_build )
+    return $version
 }
 
 function drpbx-builds {
 	param(
+		[string]$default = '27.3.21',
 		[string]$hrefs,
-		[string]$beta_version,
-		[bool]$beta_build
+		[string]$testVersion,
+		[bool]$_build
 	)
     $links = $hrefs
     $links = $links -split ( '\/' ); $build = @()
-	$build_version = @{$true=($re_beta + $re_build);$false=($re_stable + $re_build)}[( ($beta_build) )]
+    $regex = @{$true=($re_build);$false=($re_build)}[ ($_build) ]
     foreach( $_ in $links ) {
-     $_ = $_ -replace ( ($build_version), $re_non ) -replace ( $re_dashndigits , $re_non ) -replace ($re_dash , $re_dot ) -replace ( $re_t5 , $re_non ) -replace ($re_abc  , $re_non ) -replace ( $re_num_M , $re_non )
-		if (( $beta_build )) {
-	    if ( $_ -ge '27.3.21' ) {
-			if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
-			$build = $_
-			break;
-			}
-		}
-		} else {
-            $_ = $_  -replace ('m', $re_non )
-			if (( $_ -ge '27.3.21' ) -and ( $_ -le $beta_version )) {
-			$build = $_
-			break;
-			}
-		}
+        foreach( $G in $_ ) {
+            if ( $G -match '([\d]{2}[\-]{1}[\d]{1,2}[\-]{1}[\d]{2})' ) {
+                $G = $G -replace($regex,$re_non) -replace($re_dash, $re_dot)
+                    if (( $G -ge $default ) -and ( $G -le $testVersion )) {
+                    $build += $G;
+                    if (( $build | measure ).Count -ge '6') { $build = ($build | measure -Maximum ).Maximum; break;}
+                    }
+                }
+            }
     }
-	return $build
+	return $build | select -First 1
 }
-global:au_GetLatest
+
+$stable = ( drpbx-compare -_version "29.4.20" )
+$beta = ( drpbx-compare -_version "30.3.15" -build "beta" -_build $true )
+Write-Host "Stable -$stable- Beta -$beta-"
 Write-Host "17-06-07 stable 27.4.22"
 Write-Host "17-06-07 beta 28.3.12"
 $Stopwatch.Stop()
