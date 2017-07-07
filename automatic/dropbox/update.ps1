@@ -1,81 +1,40 @@
+Import-Module au
+import-module "$PSScriptRoot\..\..\scripts\au_extensions.psm1"
+. "$PSScriptRoot\update_helper.ps1"
 
-import-module au
-
-$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
-
+function global:au_AfterUpdate { Set-DescriptionFromReadme -SkipFirst 1 }
 
 function global:au_SearchReplace {
-  @{
-    ".\tools\chocolateyInstall.ps1" = @{
-      "(^[$]version\s*=\s*)('.*')"= "`$1'$($Latest.Version)'"
-      "(?i)(^\s*url\s*=\s*)('.*')" = "`$1'$($Latest.URL32)'"
-      "(?i)(^\s*checksum\s*=\s*)('.*')" = "`$1'$($Latest.Checksum32)'"
-      "(?i)(^\s*checksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
+    return @{
+        ".\tools\chocolateyInstall.ps1" = @{
+            "(?i)(^\s*url\s*=\s*)('.*')"          = "`$1'$($Latest.Url32)'"
+            "(?i)(^\s*checksum\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum32)'"
+            "(?i)(^\s*checksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
+        }
     }
-  }
 }
 
-function global:au_GetLatest {
+function global:au_GetLatest { 
+ $downloadEndpointUrl = 'https://www.dropbox.com/download?full=1&plat=win'
+    $versionRegEx = '.*Dropbox%20([0-9\.]+).*'
+    $downloadUrl = Get-RedirectedUrl $downloadEndpointUrl
+    $fnd_version = $downloadUrl -replace $versionRegEx, '$1'
+	  $version = ( drpbx-compare $fnd_version )
+    return @{ URL32 = $downloadUrl; Version = $version }
+}
 
+Function Get-RedirectedUrl {
+    Param (
+        [Parameter(Mandatory = $true)][String]$url
+    )
 
-$HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-$stable_builds = @();
-$beta_builds = @();
-$HTML.Links | foreach {
-if ($_.href -match "stable" ) {
-$stable_builds += $_.href
-}
-if ($_.href -match "beta" ) {
-$beta_builds += $_.href
-}
-}
-#Write-Host $beta_builds[2]
-function stable-builds() {
-$Stable_latestVersion = $stable_builds
-$Stable_latestVersion = $Stable_latestVersion -split ( '\/' )
-#$stable = $Stable_latestVersion[3]
-$stable = @()
-    foreach( $_ in $Stable_latestVersion ) {
-    $_ = $_ -replace ('Stable-Build-', '' )
-    $_ = $_ -replace ("\-\D+",'')
-    $_ = $_ -replace ('-', '.')
-    $_ = $_ -replace ('t5','')
-    $_ = $_ -replace ('m','')
-    $_ = $_ -replace ('[a-z]\w+','')
-    $_ = $_ -replace ('\d+\#[M]\d+','')
-            if (( $_ -ge '27.3.21' ) -and ( $_ -le (beta-builds) )) {
-            $stable = $_
-            #Write-Host "we are .$_. "
-            break;
-            }
+    $request = [System.Net.WebRequest]::Create($url)
+    $request.AllowAutoRedirect = $false
+    $response = $request.GetResponse()
+
+    If ($response.StatusCode -eq "Found") {
+        $response.GetResponseHeader("Location")
     }
-	return $stable
-}
-function beta-builds() {
-$Beta_latestVersion = $beta_builds
-$Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
-$beta = @()
-	foreach( $_ in $Beta_latestVersion ) {
-	$_ = $_ -replace ('Beta-Build-', '' )
-	$_ = $_ -replace ("\-\D+",'')
-	$_ = $_ -replace ('-', '.')
-	$_ = $_ -replace ('t5','')
-	$_ = $_ -replace ('[a-z]\w+','')
-	$_ = $_ -replace ('\d+\#[M]\d+','')
-	   if ( $_ -ge '27.3.21' ) {
-			if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
-			$beta = $_
-			#Write-Host "we are .$_. "
-			break;
-			}
-		}
-	}
-	return $beta
-}
-$version = (stable-builds);
-$url = "https://dl-web.dropbox.com/u/17/Dropbox%20${version}.exe"
-
- return @{ URL32 = $url; Version = $version; }
 }
 
-update
+update -ChecksumFor 32

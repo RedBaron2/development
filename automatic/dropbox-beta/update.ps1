@@ -1,6 +1,11 @@
 
 import-module au
-$releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
+ . "$PSScriptRoot\..\dropbox\update_helper.ps1"
+
+ # function au_BeforeUpdate() {
+    # Download $Latest.URL32 / $Latest.URL64 in tools directory and remove any older installers.
+    # Get-RemoteFiles
+# }
 
 function global:au_SearchReplace {
   @{
@@ -15,32 +20,8 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
 
-$betaVersionRegEx = '.*Beta-Build-([0-9\.\-]+).*'
-$HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-$beta_builds = @()
-$HTML.Links | foreach {
-    if ($_.href -match "beta" ) {
-    $beta_builds += $_.href
-    }
-}
-$Beta_latestVersion = $beta_builds
-$Beta_latestVersion = $Beta_latestVersion -split ( '\/' )
-$beta = @()
-foreach( $_ in $Beta_latestVersion ) {
-$_ = $_ -replace ('Beta-Build-', '' ) 
-$_ = $_ -replace ("\-\D+",'')
-$_ = $_ -replace ('-', '.')
-$_ = $_ -replace ('t5','')
-$_ = $_ -replace ('[a-z]\w+','')
-$_ = $_ -replace ('\d+\#[M]\d+','')
-   if ( $_ -ge '27.3.21' ) {
-        if ( $_ -match '(\d+\.)?(\d+\.)?(\*|\d+)') {
-        $beta = $_
-        break;
-        }
-    }
-}
-$HTML.close
+$beta = ( drpbx-compare -_version "30.3.15" -build "beta" -_build $true )
+
 $url = "https://dl-web.dropbox.com/u/17/Dropbox%20${beta}.exe"
 
  return @{ URL32 = $url; Version = $beta; }
