@@ -1,5 +1,4 @@
 $ErrorActionPreference = 'Stop'
-. $toolsPath\helper.ps1
 
 $chromium_string = "\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Chromium"
 $hive = "hkcu"
@@ -11,8 +10,7 @@ if (Test-Path $Chromium) {
   $silentArgs = '--system-level --do-not-launch-chrome'
 }
 
-$version = ""
-Get-CompareVersion -version $version -notation "-snapshots" -package "chromium"
+
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
 $packageArgs = @{
