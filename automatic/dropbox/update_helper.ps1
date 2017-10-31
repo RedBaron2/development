@@ -34,12 +34,12 @@ function drpbx-builds {
                     if ( $G -ge $default ) {
                         if ($_build) {
                             if (( $G -ge $testVersion )) {
-                            $build += $G;
+                            $build += $G + ";";
                             if (( $build | measure ).Count -ge '6') { $build = ($build | measure -Maximum ).Maximum; break;}
                             }
                         } else {
                             if (( $G -le $testVersion )) {
-                            $build += $G;
+                            $build += $G + ";";
                             if (( $build | measure ).Count -ge '6') { $build = ($build | measure -Maximum ).Maximum; break;}
                             }
                         }
