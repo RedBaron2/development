@@ -46,8 +46,8 @@ function drpbx-builds {
                     }
                 }
             }
-	    $version = ($build | Select -First 1)
     }
+	$version = ( $build | Select -First 1 )
 	return $version
 }
 
