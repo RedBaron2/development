@@ -22,5 +22,6 @@ function drpbx-builds {
 			if (($build | measure).Count -ge '6') { $build = ($build | measure -Maximum).Maximum; break; }
             }
         }
+	
 	return ($build -split(";") | select -First 1)
 }
