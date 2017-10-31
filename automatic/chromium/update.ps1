@@ -28,17 +28,19 @@ function global:au_GetLatest {
 
   $32LatestVersion = $anyArchLatestStablesVersions | Where-Object {$_.tag_name -match $latestStableVersionNumber -or $_.tag_name -match $latestStableRevisionNumber -and $_.tag_name -match "win32"}
   $32LatestSyncInstallUrl = ($32LatestVersion.assets | Where-Object name -match "-sync.exe").browser_download_url
+  $URL32 = @{$true=$32LatestSyncInstallUrl;$false=$32LatestSyncInstallUrl[0]}[ $32LatestSyncInstallUrl -isnot [system.array] ]
 
-  $64LatestVersion = $anyArchLatestStablesVersions | Where-Object {$_.tag_name -match $latestStableVersionNumber -and $_.tag_name -match "win64"}
+  $64LatestVersion = $anyArchLatestStablesVersions | Where-Object {$_.tag_name -match $latestStableVersionNumber -or $_.tag_name -match $latestStableRevisionNumber -and $_.tag_name -match "win64"}
   $64LatestSyncInstallUrl = ($64LatestVersion.assets | Where-Object name -match "-sync.exe").browser_download_url
+  $URL64 = @{$true=$64LatestSyncInstallUrl;$false=$64LatestSyncInstallUrl[0]}[ $64LatestSyncInstallUrl -isnot [system.array] ]
 
   $ChecksumType = 'sha256'
 
   $Latest = @{
     Version        = $latestStableVersionNumber
-    URL32          = $32LatestSyncInstallUrl
+    URL32          = $URL32
     ChecksumType32 = $ChecksumType
-    URL64          = $64LatestSyncInstallUrl
+    URL64          = $URL64
     ChecksumType64 = $ChecksumType
   };
 
