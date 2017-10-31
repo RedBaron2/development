@@ -47,8 +47,6 @@ function drpbx-builds {
                 }
             }
     }
-	$build = ( $build -split(";"))
-	$version = ( $build[0] )
-	return $version
+	return (( $build -split(";")) | Select -First 1)
 }
 
