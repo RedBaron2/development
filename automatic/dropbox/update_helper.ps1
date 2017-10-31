@@ -48,6 +48,8 @@ function drpbx-builds {
             }
     }
 	$version = ( $build | Select -First 1 )
+	write-host "version -$version-"
+	write-host "zero of version" + $version[0] + "OO"
 	return $version
 }
 
