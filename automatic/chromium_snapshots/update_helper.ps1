@@ -1,4 +1,5 @@
 
+
   if (!(Test-Path "$PSScriptRoot\tools" -PathType Container)) {
   New-Item -ItemType Directory "$PSScriptRoot\tools"
   Copy-Item "$PSScriptRoot\..\chromium\tools" "$PSScriptRoot" -Force -Recurse
@@ -25,9 +26,13 @@ remove-item "$PSScriptRoot\tools\chocolateyInstall.ps1" -Force
 $filename = "$PSScriptRoot\..\chromium\tools\chocolateyInstall.ps1"
 foreach ($line in [System.IO.File]::ReadLines($filename)) {
     if ( $line -match 'toolsDir =' ) {
-        $line = ($myFunction + '$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"`
-$version = ""`
-. $toolsDir\helper.ps1`
+        $line = ($myFunction + '$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$version = ""
+if ( Get-ProcessorBits -eq 32 ) {
+$file = "chromium_x32.exe.ignore"
+} else {
+$file = "chromium_x64.exe.ignore" }
+New-Item "$toolsDir\$file" -ItemType file
 Get-CompareVersion -version $version -notation "-snapshots" -package "chromium"');
     }	
     $line |  Out-File -Append "$PSScriptRoot\tools\chocolateyInstall.ps1"
