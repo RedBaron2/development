@@ -1,6 +1,8 @@
 # Test against this version of Node.js
 environment:
   nodejs_version: "0.10"
+  # Set au version to use or omit to use the latest. Specify branch name to use development version from Github
+  au_version: master
 
 # Install scripts. (runs after repo cloning)
 install:
