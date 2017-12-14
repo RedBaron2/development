@@ -15,13 +15,16 @@ install:
   #- cinst au -y
 
 # Post-install test scripts.
-test_script:
-
+#test_script:
+install:
+- ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
+- ps: $PSVersionTable
+- git --version
 - ps: |
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
     . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     write-host "we are installed"
-    sleep 15
+    #sleep 15
     
 - ps: .\update_all.ps1
 
