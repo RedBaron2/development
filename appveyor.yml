@@ -10,7 +10,7 @@ install:
   #- ps: Install-Product node $env:nodejs_version
   # install modules
   - cinst chocolatey -y
-  #- cinst au -y
+  - cinst au -y
 
 # Post-install test scripts.
 test_script:
