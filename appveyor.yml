@@ -21,9 +21,8 @@ test_script:
 - git --version
 - ps: |
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
-    . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
-    write-host "we are installed"
-    #sleep 15
+    . "$Env:TEMP/au/scripts/Install-AU.ps1" ${Env:au_version}
+    write-host "we are installing ${env:au_version}"
     
 - ps: .\update_all.ps1
 
