@@ -15,8 +15,7 @@ install:
   #- cinst au -y
 
 # Post-install test scripts.
-#test_script:
-install:
+test_script:
 - ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
 - ps: $PSVersionTable
 - git --version
