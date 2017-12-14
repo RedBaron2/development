@@ -16,9 +16,6 @@ install:
 
 # Post-install test scripts.
 test_script:
-    
-- ps: |
-    $ErrorActionPreference = 'Continue' 
 
 - ps: |
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
