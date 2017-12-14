@@ -2,7 +2,7 @@
 environment:
   nodejs_version: "0.10"
   # Set au version to use or omit to use the latest. Specify branch name to use development version from Github
-  au_version: master
+  #au_version: master
   # Use 1 to test all, or N to split testing into N groups
   au_test_groups: 1
 
@@ -18,11 +18,11 @@ install:
 test_script:
 - ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
 - ps: $PSVersionTable
+- ps: $Env:au_version
 - git --version
 - ps: |
     git clone -q https://github.com/majkinetor/au.git $Env:TEMP/au
-    . "$Env:TEMP/au/scripts/Install-AU.ps1" ${Env:au_version}
-    write-host "we are installing ${env:au_version}"
+    . "$Env:TEMP/au/scripts/Install-AU.ps1" $Env:au_version
     
 - ps: .\update_all.ps1
 
