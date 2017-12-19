@@ -1,8 +1,8 @@
 # Test against this version of Node.js
 environment:
   nodejs_version: "0.10"
-  image:
-  - Visual Studio 2017
+image:
+- Visual Studio 2015
   # Set au version to use or omit to use the latest. Specify branch name to use development version from Github
   au_version: master
   # Use 1 to test all, or N to split testing into N groups
