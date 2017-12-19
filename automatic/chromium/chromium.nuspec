@@ -3,20 +3,20 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>chromium</id>
-    <version>62.0.3202.62</version>
-    <title>Chromium snapshots build</title>
+    <version>0.0.0.0</version>
+    <title>Chromium</title>
     <owners>chocolatey</owners>
     <authors>The Chromium Authors</authors>
     <projectUrl>http://www.chromium.org/Home</projectUrl>
     <projectSourceUrl>https://chromium.googlesource.com/chromium/src</projectSourceUrl>
-    <iconUrl>https://raw.githubusercontent.com/chocolatey/chocolatey-coreteampackages/master/icons/chromium.svg</iconUrl>
+    <iconUrl>https://cdn.rawgit.com/chocolatey/chocolatey-coreteampackages/edba4a5849ff756e767cba86641bea97ff5721fe/icons/chromium.svg</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <!-- Do not touch the description here in the nuspec file. Description is imported during update from the Readme.md file -->
     <description><![CDATA[Chromium is an open-source browser project that aims to build a safer, faster, and more stable way for all Internet users to experience the web. This site contains design documents, architecture overviews, testing information, and more to help you learn to build and work with the Chromium source code.
 
 ## Notes
 
-- This package installs the Chromium snapshots builds by default to the `%programfiles(x86)%` instead of `%localappdata%\Chromium`.
+- This package installs by default to the `%programfiles(x86)%` instead of `%localappdata%\Chromium`.
 - If you have installed this package in the past to the `%localappdata%\Chromium` location it will continue to be installed in this location.
 ]]></description>
     <summary>Chromium</summary>
@@ -33,5 +33,6 @@
   </metadata>
   <files>
     <file src="tools\**" target="tools" />
+    <file src="legal\**" target="legal" />
   </files>
 </package>
