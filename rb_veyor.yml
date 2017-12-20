@@ -66,13 +66,13 @@ build_script:
     }
 
     ./update_all.ps1 -ForcedPackages $forced
-    7z a au_temp.zip $Env:TEMP\chocolatey\au\*
+    #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
 
 artifacts:
-- path: update_info.xml
-- path: Update-AUPackages.md
-- path: au_temp.zip
+- path: AU_update_report.xml
+- path: AU_update_report.log
+- path: AU_Updates_temp.zip
 
 notifications:
 - provider: Email
