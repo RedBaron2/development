@@ -13,7 +13,7 @@ function global:au_SearchReplace {
 }
 
 function global:au_BeforeUpdate {
-	Remove-Item ".\tools\*.exe" -Force # Removal of downloaded files
+	Remove-Item ".\*.exe" -Force # Removal of downloaded files
 }
 
 function global:au_GetLatest {
