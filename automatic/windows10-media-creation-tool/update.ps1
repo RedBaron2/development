@@ -18,14 +18,19 @@ function global:au_BeforeUpdate {
 
 function global:au_GetLatest {
 
-$url = 'http://go.microsoft.com/fwlink/?LinkId=691209'
-$fileName = "MediaCreationTool.exe"
-
+	$fileName = "MediaCreationTool.exe"
+	$url = 'http://go.microsoft.com/fwlink/?LinkId=691209'
+	Invoke-WebRequest -Uri $url -OutFile $fileName
+	$regex = "((\d+.\d+.\d+.\d+))"
+	$filer = Get-Item ".\*.exe"
+	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
+	$version = $version -match $regex;
+	$version = $Matches[0]
 
 	@{
 		fileType	= 'exe'
 		URL32		= $url
-		Version		= (Get-FileVersion -url $url -file $fileName)
-    }
+		Version		= $version
+	}
 }
 update
