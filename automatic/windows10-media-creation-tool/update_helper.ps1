@@ -10,8 +10,13 @@ param(
     Invoke-WebRequest -Uri $url -OutFile "${env:temp}\chocolatey\$packageName\$file"
     $filer = Get-Item "${env:temp}\chocolatey\$packageName\*.exe" | select -First 1
 	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
+	$version | out-file "${env:temp}\A1.log"
     if (( $version -match " " )) { $like=$true;$version = $version -split(" ") }
     $version = @{$true=$version;$false=$version[0]}[ $version -isnot [system.array] ]
-    $version = $version -match $regex; $version = $Matches[0]
+    $version | out-file "${env:temp}\A2.log"
+    $version = $version -match $regex;
+    $version | out-file "${env:temp}\A3.log"
+    $version = $Matches[0]
+    $version | out-file "${env:temp}\A4.log"
     return $version
 }
