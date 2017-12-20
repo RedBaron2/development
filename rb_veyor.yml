@@ -72,7 +72,7 @@ build_script:
 artifacts:
 - path: AU_update_report.xml
 - path: AU_update_report.log
-- path: AU_Updates_temp.zip
+- path: $Env:TEMP\AU_Updates\APPVEYOR-VM\AU_Updates_temp.zip
   name: AU_rbz
 
 notifications:
