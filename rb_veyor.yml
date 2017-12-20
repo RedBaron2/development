@@ -70,10 +70,10 @@ build_script:
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\APPVEYOR-VM\*
 
 artifacts:
-- path: AU_update_report.xml
-- path: AU_update_report.log
-- path: $Env:TEMP\AU_Updates\APPVEYOR-VM\AU_Updates_temp.zip
-  name: AU_rbz
+- path: '**\*.nupkg'
+- path: '**\*.zip'
+- path: '**\*.log'
+- path: '**\*.json
 
 notifications:
 - provider: Email
