@@ -70,9 +70,9 @@ build_script:
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
 
 artifacts:
-- path: AU_update_report.xml
-- path: AU_update_report.log
-- path: AU_Updates_temp.zip
+- path: $Env:TEMP\AU_Updates\AU_update_report.xml
+- path: $Env:TEMP\AU_Updates\AU_update_report.log
+- path: $Env:TEMP\AU_Updates\AU_Updates_temp.zip
 
 notifications:
 - provider: Email
