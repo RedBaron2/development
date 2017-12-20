@@ -1,4 +1,3 @@
-
 import-module au
 
 function global:au_SearchReplace {
@@ -12,7 +11,6 @@ function global:au_SearchReplace {
 }
 
 function global:au_BeforeUpdate {
-	Remove-Item ".\*.exe" -Force # Removal of downloaded files
 	Remove-Item ".\tools\*.exe" -Force # Removal of downloaded files
 }
 
@@ -20,9 +18,9 @@ function global:au_GetLatest {
 
 	$fileName = "MediaCreationTool.exe"
 	$url = 'http://go.microsoft.com/fwlink/?LinkId=691209'
-	Invoke-WebRequest -Uri $url -OutFile $fileName
+	Invoke-WebRequest -Uri $url -OutFile ".\tools\$fileName"
 	$regex = "((\d+.\d+.\d+.\d+))"
-	$filer = Get-Item ".\*.exe"
+	$filer = Get-Item ".\tools\*.exe"
 	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
 	$version = $version -match $regex;
 	$version = $Matches[0]
@@ -31,6 +29,6 @@ function global:au_GetLatest {
 		fileType	= 'exe'
 		URL32		= $url
 		Version		= $version
-	}
+    }
 }
-update
+update -ChecksumFor 32
