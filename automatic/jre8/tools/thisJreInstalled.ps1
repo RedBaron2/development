@@ -1,4 +1,4 @@
-# This function checks if the same version of JRE is already installed on the computer.
+﻿# This function checks if the same version of JRE is already installed on the computer.
 # It returns a hash map with a 'x86_32' and 'x86_64'. These values are not empty if the
 # same version and bitness of JRE is already installed.
 function thisJreInstalled() {

@@ -1,3 +1,4 @@
+
 import-module au
 
 function global:au_SearchReplace {

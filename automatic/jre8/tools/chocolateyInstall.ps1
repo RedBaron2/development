@@ -1,4 +1,4 @@
-try {
+﻿try {
 
 $arguments = @{}
 
@@ -41,7 +41,7 @@ $arguments = @{}
   . (Join-Path $scriptDir 'thisJreInstalled.ps1')
   . (Join-Path $scriptDir 'packageArgs.ps1')
   
-  $packageName = 'jre8'
+  $packageName = $packageArgs.packageName
   # Modify these values -----------------------------------------------------
   # Find download URLs at http://www.java.com/en/download/manual.jsp
   $url = $packageArgs.url

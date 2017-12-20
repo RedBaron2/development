@@ -1,4 +1,4 @@
-Write-Debug ("Starting " + $MyInvocation.MyCommand.Definition)
+﻿Write-Debug ("Starting " + $MyInvocation.MyCommand.Definition)
 
 $scriptDir = $(Split-Path -parent $MyInvocation.MyCommand.Definition)
 # Import function to test if JRE in the same version is already installed

@@ -1,5 +1,4 @@
 import-module au
-$releases = 'https://www.java.com/en/download/manual.jsp'
 
 function global:au_BeforeUpdate {
 	Get-RemoteFiles -Purge -FileNameBase "$($Latest.PackageName)Installer"
@@ -23,6 +22,7 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
   
+$releases = 'https://www.java.com/en/download/manual.jsp'
 	$regex = '(\d\sUpdate\s\d{1,3})'
 	$download_page = Invoke-WebRequest -UseBasicParsing $releases
 	$download_page | foreach { $_ -match $regex } | Select -First 1 -skip 1
@@ -42,3 +42,7 @@ function global:au_GetLatest {
 }
 
 update -ChecksumFor none
+
+# http://download.java.net/java/jdk8u162/archive/b03/binaries/jre-8u162-ea-bin-b03-windows-x64-24_oct_2017.exe
+# http://download.java.net/java/jdk8u162/archive/b03/binaries/jre-8u162-ea-bin-b03-windows-i586-24_oct_2017.exe
+# https://java.com/en/security/

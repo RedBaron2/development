@@ -10,27 +10,22 @@ if (Test-Path $Chromium) {
   $silentArgs = '--system-level --do-not-launch-chrome'
 }
 
-
 function Get-CompareVersion {
   param(
     [string]$version,
     [string]$notation,
     [string]$package
   )
-    $version = $version -replace($notation,"")
+    $packver = @{$true = $version; $false = ($version -replace($notation,""))}[ ( $version -notmatch $notation ) ]
     [array]$key = Get-UninstallRegistryKey -SoftwareName "$package*"
-    if ($version -eq ( $key.Version )) {
+    if ($packver -eq ( $key.Version )) {
       Write-Host "$package $version is already installed."
       return
     }
   }
+
 $toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 $version = "63.0.3239.108"
-if ( Get-ProcessorBits -eq 32 ) {
-$file = "chromium_x32.exe.ignore"
-} else {
-$file = "chromium_x64.exe.ignore" }
-New-Item "$toolsDir\$file" -ItemType file
 Get-CompareVersion -version $version -notation "-snapshots" -package "chromium"
 
 $packageArgs = @{
@@ -44,3 +39,4 @@ $packageArgs = @{
 }
 
 Install-ChocolateyInstallPackage @packageArgs
+rm $toolsDir\*.exe -ea 0 -force
