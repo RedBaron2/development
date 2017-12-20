@@ -29,7 +29,9 @@ param(
 	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
     if (( $version -match " " )) { $like=$true;$version = $version -split(" ") }
     $version = @{$true=$version;$false=$version[0]}[ $version -isnot [system.array] ]
+    write-host "A1 -$version-"
     $version = $version -match $regex; $version = $Matches[0]
+    write-host "Z1 -$version-"
     return $version
 }
 
