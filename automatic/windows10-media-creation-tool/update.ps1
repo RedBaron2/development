@@ -1,6 +1,5 @@
 
 import-module au
-. ".\update_helper.ps1"
 
 function global:au_SearchReplace {
   @{
