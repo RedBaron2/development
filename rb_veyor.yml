@@ -121,13 +121,13 @@ while($ie.ReadyState -ne $wait) {
     }
 $ie.quit()
 $version = $version + $revision
-	@{    
-	PackageName = $package
-	Title = $Title
-	fileType = 'exe'
-	Version = $version
-	URL32 = $yes
-    }
+@{    
+PackageName = $package
+Title = $Title
+fileType = 'exe'
+Version = $version
+URL32 = $yes
+}
 }
 Get-KasperskyUpdates -package kav -Title "Kaspersky Anti-Virus"
 
