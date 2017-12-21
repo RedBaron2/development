@@ -21,7 +21,7 @@ environment:
 
 install:
 - ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
-- ps: cinst selenium -y
+#- ps: cinst selenium -y
 - ps: $PSVersionTable
 - git --version
 - choco --version
@@ -39,6 +39,79 @@ install:
 # - cinst chocolatey-core.extension
     
 build_script:
+- ps: |
+
+function Get-KasperskyPackageName() {
+param(
+    [string]$a
+)
+
+$PreURL = 'https://usa.kaspersky.com/downloads/thank-you'
+switch -w ( $a ) {
+
+    'kfa' {
+        $PackageUrl = "${PreURL}/free-antivirus-download"
+    }
+    'kav' {
+        $PackageUrl = "${PreURL}/antivirus"
+    }
+    'kts' {
+        $PackageUrl = "${PreURL}/total-security"
+    }
+    'kis' {
+        $PackageUrl = "${PreURL}/internet-security"
+    }
+
+
+
+}
+
+return $PackageUrl
+
+}
+
+function Get-KasperskyUpdates {
+ param(
+	[string]$package,
+    [string]$Title
+ )
+
+ 
+$regex = '([\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,3})'
+$rev_regex = '([\d+]{5})';
+$url = Get-KasperskyPackageName $package
+if ( $url -match 'free' ) { $wait = 3 } else { $wait = 4 }
+$ie = New-Object -comobject InternetExplorer.Application
+$ie.Navigate2($url) 
+$ie.Visible = $false
+while($ie.ReadyState -ne $wait) {
+ start-sleep -Seconds 20
+} 
+    foreach ( $_ in $ie.Document.getElementsByTagName("a") ) {
+     $url = $_.href;
+         if ( $url -match $regex) {
+            $yes = $url | select -last 1
+            $version = $Matches[0]
+            $the_match = $yes -match( $rev_regex );
+            $revision = $Matches[0];
+            break;
+        }
+    }
+
+$ie.quit()
+$version = $version + $revision
+
+
+	@{    
+		PackageName = $package
+		Title       = $Title
+		fileType    = 'exe'
+		Version		= $version
+		URL32		= $yes
+    }
+
+}
+Get-KasperskyUpdates -package kav -Title "Kaspersky Anti-Virus"
 - ps: |
     $ErrorActionPreference = 'Continue'
 
