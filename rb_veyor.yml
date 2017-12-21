@@ -102,12 +102,12 @@ $ie.quit()
 $version = $version + $revision
 
 
-	@{    
-	PackageName = $package
-	Title       = $Title
-	fileType    = 'exe'
-	Version		= $version
-	URL32		= $yes
+@{    
+PackageName = $package
+Title = $Title
+fileType = 'exe'
+Version = $version
+URL32 = $yes
     }
 
 }
