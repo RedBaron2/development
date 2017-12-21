@@ -74,24 +74,24 @@ build_script:
 write-host "Starting kas standalone complex"
 function Get-KasperskyPackageName() {
 param(
-	[string]$a
+ [string]$a
 )
 $PreURL = 'https://usa.kaspersky.com/downloads/thank-you'
-	switch -w ( $a ) {
+ switch -w ( $a ) {
 
-		'kfa' {
-			$PackageUrl = "${PreURL}/free-antivirus-download"
-		}
-		'kav' {
-			$PackageUrl = "${PreURL}/antivirus"
-		}
-		'kts' {
-			$PackageUrl = "${PreURL}/total-security"
-		}
-		'kis' {
-			$PackageUrl = "${PreURL}/internet-security"
-		}
-	}
+ 'kfa' {
+ $PackageUrl = "${PreURL}/free-antivirus-download"
+ }
+'kav' {
+$PackageUrl = "${PreURL}/antivirus"
+}
+'kts' {
+$PackageUrl = "${PreURL}/total-security"
+}
+'kis' {
+$PackageUrl = "${PreURL}/internet-security"
+}
+}
 return $PackageUrl
 }
 function Get-KasperskyUpdates {
