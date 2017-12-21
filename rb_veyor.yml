@@ -21,7 +21,7 @@ environment:
 
 install:
 - ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
-#- ps: cinst ie -y
+- ps: cinst selenium -y
 - ps: $PSVersionTable
 - git --version
 - choco --version
