@@ -43,7 +43,7 @@ build_script:
 
 function Get-KasperskyPackageName() {
 param(
-    [string]$a
+     [string]$a
 )
 
 $PreURL = 'https://usa.kaspersky.com/downloads/thank-you'
@@ -72,7 +72,7 @@ return $PackageUrl
 
 function Get-KasperskyUpdates {
  param(
-	[string]$package,
+    [string]$package,
     [string]$Title
  )
 
@@ -103,11 +103,11 @@ $version = $version + $revision
 
 
 	@{    
-		PackageName = $package
-		Title       = $Title
-		fileType    = 'exe'
-		Version		= $version
-		URL32		= $yes
+	PackageName = $package
+	Title       = $Title
+	fileType    = 'exe'
+	Version		= $version
+	URL32		= $yes
     }
 
 }
