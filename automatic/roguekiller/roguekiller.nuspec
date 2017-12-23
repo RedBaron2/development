@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>roguekiller</id>
+    <version>0.0</version>
+    <title>RogueKiller</title>
+    <authors>Adlice Software</authors>
+    <owners>chocolatey</owners>
+    <licenseUrl>http://www.adlice.com/documentation/roguekiller/premium/</licenseUrl>
+    <projectUrl>http://www.adlice.com/download/roguekiller/</projectUrl>
+    <iconUrl>https://cdn.rawgit.com/chocolatey/chocolatey-coreteampackages/cf277846cf6b5436461ebd5f21b00efd67ee9910/icons/everything.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>RogueKiller is a security tool that can be used to terminate and remove malicious processes and programs from your computer.  RogueKiller has the ability to remove infections such as ZeroAccess, TDSS, rogue anti-spyware programs, and Ransomwares.
+
+RogueKiller also comes with a premium version that provides quite a few extra features that keep you more secure and allow you to customize the operation of the program. These features include automatic updates, command line usage, ticketed and private support, RogueKillerAdmin, and the ability to customize the scan.
+ 
+When you run RogueKiller, you can perform a scan of your computer for malicious programs and entries.  Once the scan is complete it will display a list of found issues and allow you to fix them.  RogueKiller also contains individual fixes that include repairing missing shortcuts due to the FakeHDD program, fixing your HOSTS file, and fixing Proxy server hijackers.
+
+## RogueKiller Free has the following features:
+
+- Kills malware and hidden processes.
+- Stop malware services.
+- Unloads malware DLLs from processses.
+- Removes malicious autorun entries.
+- Can fix DNS hijackers
+- Can fix Proxy Hijackers
+- Can repair the HOSTS file.
+- Restores shortcuts hidden by the FakeHDD rogues.
+- Analyze the Master Boot Record for symptoms of Rootkit infections.
+- List and Fix SSDT, Shadow SSDT, and IRP Hooks caused by Rootkits.
+- Displays and restores patched system files.
+- [More ...](https://www.voidtools.com/faq/)
+</description>
+    <summary>RogueKiller Anti-Malware FREE Download from the official website. Detect unknown threats, and eliminate them.</summary>
+    <releaseNotes>http://download.adlice.com/RogueKiller/Changelog.txt</releaseNotes>
+    <tags>everything file-system indexing freeware file search admin</tags>
+    <docsUrl>http://www.adlice.com/documentation/roguekiller/documentation/</docsUrl>
+    <mailingListUrl>https://forum.adlice.com/</mailingListUrl>
+    <bugTrackerUrl>https://forum.adlice.com/index.php?board=2.0</bugTrackerUrl>
+    <packageSourceUrl>https://github.com/chocolatey/chocolatey-coreteampackages/tree/master/automatic/everything</packageSourceUrl>
+    <dependencies>
+      <dependency id="chocolatey-core.extension" version="1.0.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

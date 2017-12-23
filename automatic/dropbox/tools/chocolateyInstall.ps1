@@ -1,31 +1,18 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference  = 'Stop'
 
-$PSScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
-Import-Module (Join-Path $PSScriptRoot 'functions.ps1')
-$version = '22.4.24'
-
-$packageArgs = @{
-  packageName   = 'dropbox'
-  fileType      = 'exe'
-  url           = 'https://dl-web.dropbox.com/u/17/Dropbox%2022.4.24.exe'
-  silentArgs    = '/S'
-  softwareName  = 'Dropbox'
-  checksum      = '37d27d3ebd0426be061495e9efd4d67f7e3dd3b582f89fea6a31b45b3fb9beb0'
-  checksumType  = 'sha256'  
+$packageArgs        = @{
+    packageName     = $env:ChocolateyPackageName
+    softwareName    = "Dropbox*"
+    url             = 'https://clientupdates.dropboxstatic.com/dbx-releng/client/Dropbox%2040.4.46%20Offline%20Installer.exe'
+    checksum        = 'd6586b8c353dfc7a8ff0a577821bad4c68cff40565c77ac48e7de693aa785f84'
+    fileType        = 'exe'
+    checksumType    = 'sha256'
+    silentArgs      = '/s'
+    validExitCodes = @(0, 1641, 3010)
 }
 
-#installer automatically overrides existing PPAPI installation
 Install-ChocolateyPackage @packageArgs
-# Variables for the AutoHotkey-script
-$scriptPath = Split-Path -parent $MyInvocation.MyCommand.Definition
-$ahkFile = "$scriptPath\dropbox.ahk"
 
-$installedVersion = (getDropboxRegProps).DisplayVersion
-
-  if ($installedVersion -ge $version) {
-    Write-Host "Dropbox $installedVersion is already installed."
-  } else {
-	Install-ChocolateyPackage @packageArgs
-    Start-Process 'AutoHotkey' $ahkFile
-  }
-
+if (Get-Process -Name Dropbox -ErrorAction SilentlyContinue) {
+    Stop-Process -processname Dropbox
+}
