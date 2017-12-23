@@ -49,7 +49,7 @@ $ie.quit()
 	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
 	$version = $version -match $regex;
 	$version = $Matches[0]
-$current_checksum = (gi $PSScriptRoot\tools\chocolateyInstall.ps1 | sls '\bchecksum\b') -split "=|'" | Select -Last 1 -Skip 1
+$current_checksum = (gi $PSScriptRoot\tools\chocolateyInstall.ps1 | sls '(^[$]checksum\s*=\s*)') -split "=|'" | Select -Last 1 -Skip 1
     if ($current_checksum.Length -ne 64) { throw "Can't find current checksum" }
     $remote_checksum  = Get-RemoteChecksum $url
     if ($current_checksum -ne $remote_checksum) {
