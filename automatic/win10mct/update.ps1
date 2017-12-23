@@ -65,4 +65,8 @@ function global:au_GetLatest {
 
   return $result
 }
-update -ChecksumFor none
+
+if ($MyInvocation.InvocationName -ne '.') { # run the update only if script is not sourced
+    update -ChecksumFor none
+    if ($global:au_old_force -is [bool]) { $global:au_force = $global:au_old_force }
+}
