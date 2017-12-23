@@ -2,28 +2,8 @@
 import-module au
  # . "$PSScriptRoot\..\kav\update_helper.ps1"
 
-
-function Get-FileVersion {
-param(
-	[string]$packageName = $($Latest.PackageName),
-    [string]$url,
-    [string]$file = "$($Latest.PackageName).exe"
-)
-    if (!(Test-Path "${env:temp}\chocolatey\$packageName" -PathType Container)) {
-    New-Item -ItemType Directory "${env:temp}\chocolatey\$packageName" }
-    Invoke-WebRequest -Uri $url -OutFile "${env:temp}\chocolatey\$packageName\$file"
-	# write-host "we are going to wait for 10 seconds"
-	# sleep 10
-	# write-host "done waiting heading out"
-    $filer = Get-Item "${env:temp}\chocolatey\$packageName\*.exe" | Select -First 1
-	# write-host "filer -$filer-"
-	$version = $filer.VersionInfo.FileVersion -replace '((\d+.\d+.\d+.\d+))*','$1'
-	# write-host "A version -$version-"
-    if (( $version -match " " )) { $like=$true;$version = $version -split(" ") }
-	# write-host "B version -$version-"
-    $version = @{$true=$version;$false=$version[0]}[ $version -isnot [system.array] ]
-	# write-host "C version -$version-"
-    return $version
+function global:au_BeforeUpdate {
+	Remove-Item ".\tools\*.exe" -Force # Removal of downloaded files
 }
 
 function global:au_SearchReplace {
@@ -61,13 +41,28 @@ while($ie.ReadyState -ne 3) {
 $ie.quit()
 # Write-Host "this is the yes -$yes-"
 
-$version = (Get-FileVersion -url $url)
-# write-host "D version -$version-"
+	$fileName = "kvrt.exe"
+	$url = $yes
+	Invoke-WebRequest -Uri $url -OutFile ".\tools\$fileName"
+	$regex = "((\d+.\d+.\d+.\d+))"
+	$filer = Get-Item ".\tools\*.exe"
+	$version = $filer.VersionInfo.FileVersion -replace '$regex*','$1'
+	$version = $version -match $regex;
+	$version = $Matches[0]
+$current_checksum = (gi $PSScriptRoot\tools\chocolateyInstall.ps1 | sls '\bchecksum\b') -split "=|'" | Select -Last 1 -Skip 1
+    if ($current_checksum.Length -ne 64) { throw "Can't find current checksum" }
+    $remote_checksum  = Get-RemoteChecksum $url
+    if ($current_checksum -ne $remote_checksum) {
+        Write-Host 'Remote checksum is different then the current one, forcing update'
+        $global:au_old_force = $global:au_force
+        $global:au_force = $true
+        }
+
 	@{
 		fileType	= 'exe'
-		URL32		= $yes
+		URL32		= $url
 		Version		= $version
+        Checksum32 = $remote_checksum
     }
-    # Write-Host "heading to before update, eh"
 }
-update
+update -ChecksumFor 32
