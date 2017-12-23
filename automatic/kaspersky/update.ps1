@@ -26,17 +26,13 @@ function global:au_SearchReplace {
   }
 }
 
-
 function Get-KasperskyUpdates {
  param(
 	[string]$package,
     [string]$Title
  )
- 
-# terminator ielowutil
-# sleep 5
-# terminator iexplore
- 
+$logs = "${env:temp}\$package.log"
+New-Item -ItemType "file" -Force -Path $logs
 $regex = '([\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,3})'
 $rev_regex = '([\d+]{5})';
 $url = Get-KasperskyPackageName $package
@@ -46,33 +42,29 @@ $ie.Navigate2($url)
 $ie.Visible = $false
 while($ie.ReadyState -ne $wait) {
  start-sleep -Seconds 20
-} 
+}
+
     foreach ( $_ in $ie.Document.getElementsByTagName("a") ) {
-     $url = $_.href;
-         if ( $url -match $regex) {
-            $yes = $url | select -last 1
+	 $urls = $_.href
+     $_.href | Out-File -Encoding Ascii -append $logs
+         if ( $urls -match $regex) {
+            $url = $urls | select -last 1
             $version = $Matches[0]
-            $the_match = $yes -match( $rev_regex );
+            $the_match = $url -match( $rev_regex );
             $revision = $Matches[0];
             break;
         }
     }
-# $clnt = new-object System.Net.WebClient
-# $clnt.OpenRead($yes) | Out-Null
-# $filesize = $clnt.ResponseHeaders["Content-Length"]
 
-# if ( $filesize -lt 104857600 ) { write-host "$package -$filesize-"; $clnt.quit(); break; }
 $ie.quit()
 $version = $version + $revision
- start-sleep -Seconds 30
-
 
 	@{    
 		PackageName = $package
 		Title       = $Title
 		fileType    = 'exe'
 		Version		= $version
-		URL32		= $yes
+		URL32		= $url
     }
 
 }
