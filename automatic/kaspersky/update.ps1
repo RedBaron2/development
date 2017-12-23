@@ -64,6 +64,7 @@ while($ie.ReadyState -ne $wait) {
 # if ( $filesize -lt 104857600 ) { write-host "$package -$filesize-"; $clnt.quit(); break; }
 $ie.quit()
 $version = $version + $revision
+ start-sleep -Seconds 30
 
 
 	@{    
