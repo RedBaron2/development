@@ -1,11 +1,23 @@
-. $PSScriptRoot\..\win10mct\update.ps1
+import-module au
+
+function global:au_BeforeUpdate {
+  Copy-Item "$PSScriptRoot\..\win10mct\Readme.md" "$PSScriptRoot" -Force -Recurse
+}
 
 function global:au_SearchReplace {
    @{
-        "$($Latest.PackageName).nuspec" = @{
-            "(\<dependency .+?`"$($Latest.PackageName).install`" version=)`"([^`"]+)`"" = "`$1`"$($Latest.Version)`""
+        ".\windows10-media-creation-tool.nuspec" = @{
+            "(\<dependency .+?`"$($Latest.PackageName)`" version=)`"([^`"]+)`"" = "`$1`"$($Latest.Version)`""
         }
     }
 }
 
-update -ChecksumFor none
+function global:au_GetLatest {
+    @{
+	  PackageName = "win10mct"
+      Version = Get-Content "$PSScriptRoot\..\win10mct\info" -Encoding UTF8 | select -First 1 | % { $_ -split '\|' } | select -Last 1
+    }
+
+}
+
+    update -ChecksumFor none
