@@ -1,1 +1,0 @@
-#Uninstall-VirtualPackage 'win10mct'

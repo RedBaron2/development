@@ -11,19 +11,15 @@ function global:au_SearchReplace {
 }
 
 function global:au_GetLatest {
-  $releases = 'http://www.wisecleaner.com/download.html'
+$releases = 'http://www.wisecleaner.com/download.html'
+$url = "http://downloads.wisecleaner.com/soft/WJS.zip"
 
-Set-Alias posh-tee Write-Host
-  $url = "http://downloads.wisecleaner.com/soft/WJS.zip"
-
- $HTML = Invoke-WebRequest $releases
- $newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { $_.className -eq 'product-name'} | select -first 14 | select -Last 1 ).innertext
- posh-tee $newt
- $HTML.close
- $version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
+$HTML = (Invoke-WebRequest -UseBasicParsing -Uri $releases)
+$HTML | foreach { $_ -match '(\d+\.\d+\.\d+)'} | select -first 14 | select -Last 1 
+$version = $Matches[0]
+$HTML.close
 
   @{ URL32 = $url -replace 'http:','https:'; Version = $version }
 }
 
-# update -ChecksumFor 32
-update
+update -ChecksumFor 32
