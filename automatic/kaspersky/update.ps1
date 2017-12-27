@@ -26,13 +26,15 @@ function global:au_SearchReplace {
   }
 }
 
+
 function Get-KasperskyUpdates {
  param(
 	[string]$package,
     [string]$Title
  )
-$logs = "${env:temp}\$package.log"
-New-Item -ItemType "file" -Force -Path $logs
+ $null = .{
+# $logs = "${env:temp}\$package.log"
+# New-Item -ItemType "file" -Force -Path $logs
 $regex = '([\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,3})'
 $rev_regex = '([\d+]{5})';
 $url = Get-KasperskyPackageName $package
@@ -46,7 +48,7 @@ while($ie.ReadyState -ne $wait) {
 
     foreach ( $_ in $ie.Document.getElementsByTagName("a") ) {
 	 $urls = $_.href
-     $_.href | Out-File -Encoding Ascii -append $logs
+     # $_.href | Out-File -Encoding Ascii -append $logs
          if ( $urls -match $regex) {
             $url = $urls | select -last 1
             $version = $Matches[0]
@@ -58,7 +60,7 @@ while($ie.ReadyState -ne $wait) {
 
 $ie.quit()
 $version = $version + $revision
-
+}
 	@{    
 		PackageName = $package
 		Title       = $Title
@@ -80,4 +82,4 @@ function global:au_GetLatest {
   return @{ Streams = $streams }
 }
 
-update
+update -ChecksumFor 32
