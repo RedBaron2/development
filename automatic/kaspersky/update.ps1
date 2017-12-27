@@ -26,6 +26,8 @@ function global:au_SearchReplace {
   }
 }
 
+$OS_caption = ( Get-CimInstance win32_operatingsystem -Property Caption )
+$check = @{$true=$true;$false=$false}[ ( $OS_caption -match 'Server' ) ]
 
 function Get-KasperskyUpdates {
  param(
@@ -33,8 +35,6 @@ function Get-KasperskyUpdates {
     [string]$Title
  )
  $null = .{
-# $logs = "${env:temp}\$package.log"
-# New-Item -ItemType "file" -Force -Path $logs
 $regex = '([\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,3})'
 $rev_regex = '([\d+]{5})';
 $url = Get-KasperskyPackageName $package
@@ -45,18 +45,29 @@ $ie.Visible = $false
 while($ie.ReadyState -ne $wait) {
  start-sleep -Seconds 20
 }
-
-    foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName("a") ) {
-	 $urls = $_.href
-     # $_.href | Out-File -Encoding Ascii -append $logs
-         if ( $urls -match $regex) {
-            $url = $urls | select -last 1
-            $version = $Matches[0]
-            $the_match = $url -match( $rev_regex );
-            $revision = $Matches[0];
-            break;
-        }
-    }
+	if ( $check ) {
+		foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName('a') ) {
+		 $urls = $_.href
+			 if ( $urls -match $regex) {
+				$url = $urls | select -last 1
+				$version = $Matches[0]
+				$the_match = $url -match( $rev_regex );
+				$revision = $Matches[0];
+				break;
+			}
+		}
+	} else {
+		foreach ( $_ in $ie.Document.getElementsByTagName('a') ) {
+		 $urls = $_.href
+			 if ( $urls -match $regex) {
+				$url = $urls | select -last 1
+				$version = $Matches[0]
+				$the_match = $url -match( $rev_regex );
+				$revision = $Matches[0];
+				break;
+			}
+		}
+	}
 
 $ie.quit()
 $version = $version + $revision
