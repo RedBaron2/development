@@ -28,7 +28,8 @@ $ie.Visible = $false
 while($ie.ReadyState -ne 3) {
  start-sleep -Seconds 20
 } 
-    foreach ( $_ in $ie.Document.getElementsByTagName("a") ) {
+	# The .IHTMLDocument3_ is only for windows server IE to read correctly
+    foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName("a") ) {
      $url = $_.href;
          if ( $url -match $regex) {
             $yes = $url | select -last 1
