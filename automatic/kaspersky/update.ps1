@@ -46,7 +46,7 @@ while($ie.ReadyState -ne $wait) {
  start-sleep -Seconds 20
 }
 
-    foreach ( $_ in $ie.Document.getElementsByTagName("a") ) {
+    foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName("a") ) {
 	 $urls = $_.href
      # $_.href | Out-File -Encoding Ascii -append $logs
          if ( $urls -match $regex) {
