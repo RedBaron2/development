@@ -80,19 +80,20 @@ build_script:
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\APPVEYOR-VM\*
+    7z a All_nupkg_files.zip $Env:nupkg_cache_path\*
 
 artifacts:
-- path: '**\*.nupkg'
+#- path: '**\*.nupkg'
 - path: '**\*.zip'
-- path: '**\*.log'
-- path: '**\*.json'
+#- path: '**\*.log'
+#- path: '**\*.json'
 
-notifications:
-- provider: Email
-  to: $(mail_user)
-  on_build_success: false
-  on_build_failure: true
-  on_build_status_changed: true
+#notifications:
+#- provider: Email
+#  to: $(mail_user)
+#  on_build_success: false
+#  on_build_failure: true
+#  on_build_status_changed: true
 
 #on_finish:
 #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
