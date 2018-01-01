@@ -87,7 +87,7 @@ function global:au_GetLatest {
     kav = Get-KasperskyUpdates -package kav -Title "Kaspersky Anti-Virus"
     kis = Get-KasperskyUpdates -package kis -Title "Kaspersky Internet Security"
     kts = Get-KasperskyUpdates -package kts -Title "Kaspersky Total Security"
-    # kfa = Get-KasperskyUpdates -package kfa -Title "Kaspersky Free"
+    kfa = Get-KasperskyUpdates -package kfa -Title "Kaspersky Free"
   }
 
   return @{ Streams = $streams }
