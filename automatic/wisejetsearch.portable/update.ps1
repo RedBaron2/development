@@ -15,7 +15,7 @@ function global:au_GetLatest {
   $url = "http://downloads.wisecleaner.com/soft/WJS.zip"
   $exactName = 'jetsearch'
   $HTML = Invoke-WebRequest $releases
-  $newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match $exactName )} | select -Last 1 ).innertext
+  $newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match 'jetsearch' )} | select -Last 1 ).innertext
   $HTML.close
   $version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
 
