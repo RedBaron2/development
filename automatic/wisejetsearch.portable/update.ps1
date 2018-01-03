@@ -10,16 +10,37 @@ function global:au_SearchReplace {
      }
 }
 
-function global:au_GetLatest {
   $releases = 'http://www.wisecleaner.com/download.html'
-  $url = "http://downloads.wisecleaner.com/soft/WJS.zip"
-  $exactName = 'jetsearch'
-  $HTML = Invoke-WebRequest $releases
-  $newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match $exactName )} | select -Last 1 ).innertext
-  $HTML.close
-  $version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
+  $url = 'https://downloads.wisecleaner.com/soft'
+function Wiggins {
+param(
+	[string]$fileName,
+	[string]$exactName,
+	[string]$Title
+)
+	$pos = $fileName.IndexOf(".")
+	$URL = "$url/$fileName"
+	$HTML = Invoke-WebRequest $releases
+	$newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match $exactName )} | select -Last 1 ).innertext
+	$HTML.close
+	$version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
 
-   @{ URL32 = $url -replace 'http:','https:'; Version = $version }
+   	@{    
+		PackageName = $fileName.Substring(0, $pos)
+		Title       = $Title
+		fileType    = $fileName.Substring($pos+1)
+		Version		= $version
+		URL32		= $url
+    }
+}
+
+function global:au_GetLatest {
+  $streams = [ordered] @{
+   # wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
+    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName 'jetsearch' -Title 'Wise JetSearch'
+  }
+
+  return @{ Streams = $streams }
 }
 
 update -ChecksumFor 32
