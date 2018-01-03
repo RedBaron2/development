@@ -38,7 +38,7 @@ $null = .{
 function global:au_GetLatest {
   $streams = [ordered] @{
    # wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
-    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName "'jetsearch'" -Title 'Wise JetSearch'
+    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName jetsearch -Title 'Wise JetSearch'
   }
 
   return @{ Streams = $streams }
