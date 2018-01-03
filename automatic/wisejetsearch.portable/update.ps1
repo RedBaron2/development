@@ -29,15 +29,15 @@ param(
 		PackageName = $fileName.Substring(0, $pos)
 		Title       = $Title
 		fileType    = $fileName.Substring($pos+1)
-		Version		= $version
-		URL32		= $url
+		Version	    = $version
+		URL32	    = $url
     }
 }
 
 function global:au_GetLatest {
   $streams = [ordered] @{
    # wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
-    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName 'jetsearch' -Title 'Wise JetSearch'
+    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName "'jetsearch'" -Title 'Wise JetSearch'
   }
 
   return @{ Streams = $streams }
