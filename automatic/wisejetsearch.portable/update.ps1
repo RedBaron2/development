@@ -18,13 +18,14 @@ param(
 	[string]$exactName,
 	[string]$Title
 )
+$null = .{
 	$pos = $fileName.IndexOf(".")
 	$URL = "$url/$fileName"
 	$HTML = Invoke-WebRequest $releases
 	$newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match $exactName )} | select -Last 1 ).innertext
 	$HTML.close
 	$version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
-
+	}
    	@{    
 		PackageName = $fileName.Substring(0, $pos)
 		Title       = $Title
