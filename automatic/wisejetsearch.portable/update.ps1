@@ -22,7 +22,7 @@ $null = .{
 	$pos = $fileName.IndexOf(".")
 	$URL = "$url/$fileName"
 	$HTML = Invoke-WebRequest $releases
-	$newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match $exactName )} | select -Last 1 ).innertext
+	$newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match "$exactName" )} | select -Last 1 ).innertext
 	$HTML.close
 	$version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
 	}
@@ -38,7 +38,7 @@ $null = .{
 function global:au_GetLatest {
   $streams = [ordered] @{
    # wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
-    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName jetsearch -Title 'Wise JetSearch'
+    wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName 'jetsearch' -Title 'Wise JetSearch'
   }
 
   return @{ Streams = $streams }
