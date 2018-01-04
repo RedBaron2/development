@@ -18,26 +18,25 @@ param(
 	[string]$exactName,
 	[string]$Title
 )
-$null = .{
 	$pos = $fileName.IndexOf(".")
 	$URL = "$url/$fileName"
 	$HTML = Invoke-WebRequest $releases -UseBasicParsing
-	$newt = ( $HTML.ParsedHtml.getElementsByTagName('a') | Where { ($_.className -eq 'product-name') -and ($_.href -match "$exactName" )} | select -Last 1 ).innertext
-	$HTML.close
-	$version = $newt -replace('([A-Z]\w+\s+)|([\d+]{3}\s)','')
-	}
+	$newt = ( $HTML.links | Where { ($_.href -match $exactName )} | select -Last 1 )
+	$newt = $newt -split ";"; $step = $newt[0]
+	$HTML.close; $ver = $step -match '((\d+\.?){3})'; $version = $Matches[0]
+
    	@{    
 		PackageName = $fileName.Substring(0, $pos)
 		Title       = $Title
 		fileType    = $fileName.Substring($pos+1)
-		Version	    = $version
-		URL32	    = $url
+		Version     = $version
+		URL32       = $url
     }
 }
 
 function global:au_GetLatest {
   $streams = [ordered] @{
-   # wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
+  #  wisecare365 = Wiggins -fileName 'WiseCare365.zip' -exactName 'wise-care-365' -Title 'Wise Care 365'
     wisejetsearch = Wiggins -fileName 'WJS.zip' -exactName 'jetsearch' -Title 'Wise JetSearch'
   }
 
