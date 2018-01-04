@@ -18,13 +18,14 @@ param(
 	[string]$exactName,
 	[string]$Title
 )
+$null = .{
 	$pos = $fileName.IndexOf(".")
 	$URL = "$url/$fileName"
 	$HTML = Invoke-WebRequest $releases -UseBasicParsing
 	$newt = ( $HTML.links | Where { ($_.href -match $exactName )} | select -Last 1 )
 	$newt = $newt -split ";"; $step = $newt[0]
 	$HTML.close; $ver = $step -match '((\d+\.?){3})'; $version = $Matches[0]
-
+}
    	@{    
 		PackageName = $fileName.Substring(0, $pos)
 		Title       = $Title
