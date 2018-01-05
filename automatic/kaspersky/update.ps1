@@ -38,37 +38,21 @@ function Get-KasperskyUpdates {
 $regex = '([\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,2}[\.][\d]{0,3})'
 $rev_regex = '([\d+]{5})';
 $url = Get-KasperskyPackageName $package
-if ( $url -match 'free' ) { $wait = 3 } else { $wait = 4 }
+$wait = 4
 $ie = New-Object -comobject InternetExplorer.Application
-$ie.Navigate2($url) 
+$ie.Navigate2($url)
 $ie.Visible = $false
 while($ie.ReadyState -ne $wait) {
  start-sleep -Seconds 20
 }
 	if ( $check ) {
-		foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName('a') ) {
-		 $urls = $_.href
-			 if ( $urls -match $regex) {
-				$url = $urls | select -last 1
-				$version = $Matches[0]
-				$the_match = $url -match( $rev_regex );
-				$revision = $Matches[0];
-				break;
-			}
-		}
+		$urls = $ie.Document.IHTMLDocument3_getElementsByTagName("a") | % { $_.href } | where { $_ -match $regex } | select -First 1
 	} else {
-		foreach ( $_ in $ie.Document.getElementsByTagName('a') ) {
-		 $urls = $_.href
-			 if ( $urls -match $regex) {
-				$url = $urls | select -last 1
-				$version = $Matches[0]
-				$the_match = $url -match( $rev_regex );
-				$revision = $Matches[0];
-				break;
-			}
-		}
+		$urls = $ie.Document.getElementsByTagName("a") | % { $_.href } | where { $_ -match $regex } | select -First 1
 	}
-
+	$version = $Matches[0]
+	$the_match = $urls -match( $rev_regex );
+	$revision = $Matches[0];
 $ie.quit()
 $version = $version + $revision
 }
@@ -77,16 +61,16 @@ $version = $version + $revision
 		Title       = $Title
 		fileType    = 'exe'
 		Version		= $version
-		URL32		= $url
+		URL32		= $urls
     }
 
 }
 
 function global:au_GetLatest {
   $streams = [ordered] @{
-   # kav = Get-KasperskyUpdates -package kav -Title "Kaspersky Anti-Virus"
-   # kis = Get-KasperskyUpdates -package kis -Title "Kaspersky Internet Security"
-   # kts = Get-KasperskyUpdates -package kts -Title "Kaspersky Total Security"
+    kav = Get-KasperskyUpdates -package kav -Title "Kaspersky Anti-Virus"
+    kis = Get-KasperskyUpdates -package kis -Title "Kaspersky Internet Security"
+    kts = Get-KasperskyUpdates -package kts -Title "Kaspersky Total Security"
     kfa = Get-KasperskyUpdates -package kfa -Title "Kaspersky Free"
   }
 
