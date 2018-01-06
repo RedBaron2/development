@@ -34,7 +34,7 @@ $ie.quit()
 # Write-Host "this is the yes -$yes-"
 
 	$fileName = "kvrt.exe"
-	$url = $yes
+#	$url = $yes
 	Invoke-WebRequest -Uri $url -OutFile ".\tools\$fileName"
 	$regex = "((\d+.\d+.\d+.\d+))"
 	$filer = Get-Item ".\tools\*.exe"
