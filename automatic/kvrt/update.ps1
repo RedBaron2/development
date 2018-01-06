@@ -29,16 +29,7 @@ while($ie.ReadyState -ne 3) {
  start-sleep -Seconds 20
 } 
 	# The .IHTMLDocument3_ is only for windows server IE to read correctly
-    foreach ( $_ in $ie.Document.IHTMLDocument3_getElementsByTagName("a") ) {
-     $url = $_.href;
-         if ( $url -match $regex) {
-            $yes = $url | select -last 1
-            # $version = $Matches[0]
-            # $the_match = $yes -match( $rev_regex );
-            # $revision = $Matches[0];
-            break;
-        }
-    }
+$url = $ie.Document.IHTMLDocument3_getElementsByTagName("a") | % { $_.href } | where { $_ -match $regex } | select -First 1
 $ie.quit()
 # Write-Host "this is the yes -$yes-"
 
