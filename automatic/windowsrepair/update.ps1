@@ -46,7 +46,7 @@ function global:au_GetLatest {
 
   $streams = [ordered] @{
     portable = Wiggins -releases $ChkUrl -PackageName "windowsrepair.portable" -Title "Windows Repair Portable" -fileExt ".zip"
-    install = Wiggins -releases $ChkUrl -PackageName "windowsrepair" -Title "Windows Repair" -fileExt "_setup.exe"
+    install = Wiggins -releases $ChkUrl -PackageName "windowsrepair.install" -Title "Windows Repair" -fileExt "_setup.exe"
   }
 
   return @{ Streams = $streams }
