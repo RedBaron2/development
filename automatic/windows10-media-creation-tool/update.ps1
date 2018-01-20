@@ -1,9 +1,5 @@
 import-module au
 
-function global:au_BeforeUpdate {
-  Copy-Item "$PSScriptRoot\..\win10mct\Readme.md" "$PSScriptRoot" -Force -Recurse
-}
-
 function global:au_SearchReplace {
    @{
         ".\windows10-media-creation-tool.nuspec" = @{
@@ -20,4 +16,4 @@ function global:au_GetLatest {
 
 }
 
-    update -ChecksumFor none
+    update -ChecksumFor none -NoCheckChocoVersion
