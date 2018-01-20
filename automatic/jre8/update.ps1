@@ -41,7 +41,7 @@ $releases = 'https://www.java.com/en/download/manual.jsp'
     }
 }
 
-update -ChecksumFor none
+update -ChecksumFor none -NoCheckChocoVersion
 
 # http://download.java.net/java/jdk8u162/archive/b03/binaries/jre-8u162-ea-bin-b03-windows-x64-24_oct_2017.exe
 # http://download.java.net/java/jdk8u162/archive/b03/binaries/jre-8u162-ea-bin-b03-windows-i586-24_oct_2017.exe
