@@ -14,7 +14,7 @@ function global:au_SearchReplace {
 
 function Get-FileVersion {
 param(
-	[string]$packageName = $($Latest.PackageName),
+    [string]$packageName = $($Latest.PackageName),
     [string]$url,
     [string]$file = "$($Latest.PackageName).exe"
 )
@@ -57,4 +57,4 @@ $version = @{$true=$version;$false=$version[1]}[ $version -isnot [system.array] 
 		Version		= $version
     }
 }
-update
+update -NoCheckChocoVersion
