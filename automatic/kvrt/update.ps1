@@ -23,4 +23,4 @@ function global:au_GetLatest {
 
   return @{ Streams = $streams }
 }
-update -ChecksumFor none
+update -ChecksumFor none -NoCheckChocoVersion
