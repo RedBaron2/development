@@ -31,13 +31,13 @@ function global:au_GetLatest {
  $version = $versy;
     
     $Latest = @{
-        Version             = $version
-        Checksum32          = $checksum
-		URL32				= $preURL + $fileName
-        ChecksumType32      = 'sha256'
+        Version        = $version
+        Checksum32     = $checksum
+	 URL32          = $preURL + $fileName
+        ChecksumType32 = 'sha256'
     };
 
     return $Latest;
 }
 
-update -ChecksumFor none
+update -ChecksumFor none -NoCheckChocoVersion

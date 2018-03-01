@@ -37,7 +37,6 @@ $null = .{
 		Version = $version
 		URL32 = $url
     }
-	return
 }
 	
 	$ChkUrl = 'http://www.tweaking.com/articles/pages/tweaking_com_windows_repair_change_log,1.html'
@@ -52,4 +51,4 @@ function global:au_GetLatest {
   return @{ Streams = $streams }
 }
 
-update -ChecksumFor 32
+update -ChecksumFor 32 -NoCheckChocoVersion
