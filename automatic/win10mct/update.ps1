@@ -1,4 +1,4 @@
-import-module au
+﻿import-module au
 Import-Module "$PSScriptRoot\..\..\scripts\au_extensions.psm1"
  . "$PSScriptRoot\..\win10mct\update_helper.ps1"
 
@@ -20,7 +20,7 @@ function global:au_GetLatest {
   $url32 = Get-RedirectedUrl 'https://go.microsoft.com/fwlink/?LinkId=691209'
   $etag = GetETagIfChanged $url32
   if ($etag) {
-    $result = GetResultInformation -url32 $url32 -file "w10mct.exe"
+    $result = GetResultInformation $url32
     $result["ETAG"] = $etag
   }
   else {
@@ -33,4 +33,4 @@ function global:au_GetLatest {
   return $result
 }
 
-    update -ChecksumFor none -NoCheckChocoVersion
+    update -ChecksumFor none

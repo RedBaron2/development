@@ -1,7 +1,7 @@
 import-module au
-import-module "$PSScriptRoot\..\..\scripts\au_extensions.psm1"
+. "$PSScriptRoot\..\..\scripts\Get-Padded-Version.ps1"
 
-$releases = 'http://fpdownload2.macromedia.com/get/flashplayer/update/current/xml/version_en_win_pl.xml'
+$releases = "http://fpdownload2.macromedia.com/get/flashplayer/update/current/xml/version_en_win_pl.xml" # URL to for GetLatest
 $padVersionUnder = '24.0.1'
 
 function global:au_BeforeUpdate {
@@ -32,8 +32,8 @@ function global:au_GetLatest {
 
   return @{
     URL32 = $url32
-    Version = Get-FixVersion $currentVersion -OnlyFixBelowVersion $padVersionUnder
+    Version = Get-Padded-Version $currentVersion $padVersionUnder
   }
 }
 
-update -ChecksumFor 32 -NoCheckChocoVersion
+update -ChecksumFor 32

@@ -55,4 +55,4 @@ function global:au_GetLatest {
   return @{ Streams = $streams }
 }
 
-update -ChecksumFor 32 -NoCheckChocoVersion
+update -ChecksumFor 32
