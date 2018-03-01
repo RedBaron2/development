@@ -25,4 +25,4 @@ $HTML.close
   return @{ URL32 = $url; Version = $version; }
 }
 
-update -ChecksumFor 32 -NoCheckChocoVersion
+update -ChecksumFor 32

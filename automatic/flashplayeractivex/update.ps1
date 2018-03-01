@@ -1,31 +1,61 @@
-import-module au
-import-module "$PSScriptRoot\..\..\scripts\au_extensions.psm1"
 
-$releases = 'http://fpdownload2.macromedia.com/get/flashplayer/update/current/xml/version_en_win_pl.xml'
+import-module au
+. "$PSScriptRoot\..\..\scripts\Get-Padded-Version.ps1"
+
+$releases = "http://fpdownload2.macromedia.com/get/flashplayer/update/current/xml/version_en_win_pl.xml" # URL to for GetLatest
 $padVersionUnder = '24.0.1'
 
+function global:au_BeforeUpdate {
+  # We need this, otherwise the checksum won't get created
+  # Since windows 8 or later is skipped.
+  $Latest.ChecksumType32 = 'sha256'
+  $Latest.Checksum32     = Get-RemoteChecksum $Latest.URL32
+}
+
 function global:au_SearchReplace {
-   @{
-        ".\tools\chocolateyInstall.ps1" = @{
-            "(?i)(^\s*url\s*=\s*)('.*')"          = "`$1'$($Latest.URL32)'"
-            "(?i)(^\s*checksum\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum32)'"
-            "(?i)(^\s*packageName\s*=\s*)('.*')"  = "`$1'$($Latest.PackageName)'"
-            "(?i)(^\s*fileType\s*=\s*)('.*')"     = "`$1'$($Latest.FileType)'"
-        }
+  @{
+    ".\tools\chocolateyInstall.ps1" = @{
+      "(^[$]version\s*=\s*)('.*')"= "`$1'$($Latest.RemoteVersion)'"
+      "(^[$]majorVersion\s*=\s*)('.*')"= "`$1'$($Latest.majorVersion)'"
+      "(^[$]packageName\s*=\s*)('.*')"= "`$1'$($Latest.PackageName)'"
+      "(?i)(^\s*url\s*=\s*)('.*')" = "`$1'$($Latest.URL32)'"
+      "(?i)(^\s*checksum\s*=\s*)('.*')" = "`$1'$($Latest.Checksum32)'"
+      "(?i)(^\s*checksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
     }
+  }
 }
 
 function global:au_GetLatest {
 
+
+  # $HTML = Invoke-WebRequest -Uri $releases
+  # $try = ($HTML.ParsedHtml.getElementsByTagName('p') | Where{ $_.className -eq 'NoBottomMargin' } ).innerText
+  # $try = $try  -split "\r?\n"
+  # $try = $try[0] -replace ' ', ' = '
+  # $try =  ConvertFrom-StringData -StringData $try
+  # $CurrentVersion = ( $try.Version )
+  # $majorVersion = ([version] $CurrentVersion).Major
+
+  # $url32 = "https://download.macromedia.com/pub/flashplayer/pdc/${CurrentVersion}/install_flash_player_${majorVersion}_active_x.msi"
+
+  # $packageVersion = Get-Padded-Version $CurrentVersion $padVersionUnder
+
+  # return @{ URL32 = $url32; Version = $packageVersion; RemoteVersion = $CurrentVersion; majorVersion = $majorVersion; }
+# }
+
+# update -ChecksumFor none
+
   $XML = New-Object  System.Xml.XmlDocument
   $XML.load($releases)
-  $version = $XML.XML.update.version.replace(',', '.')
-  $major_version = ([version]$version).Major
+  $currentVersion = $XML.XML.update.version.replace(',', '.')
+  $majorVersion = ([version]$currentVersion).Major
 
-    @{
-        Version = Get-FixVersion $version -OnlyFixBelowVersion $padVersionUnder
-        URL32   = "https://download.macromedia.com/get/flashplayer/pdc/${version}/install_flash_player_${major_version}_plugin.msi"
-    }
+  $url32 = "https://download.macromedia.com/pub/flashplayer/pdc/${CurrentVersion}/install_flash_player_${majorVersion}_active_x.msi"
+
+  $packageVersion = Get-Padded-Version $CurrentVersion $padVersionUnder
+
+  return @{ URL32 = $url32; Version = $packageVersion; RemoteVersion = $CurrentVersion; majorVersion = $majorVersion; }
 }
 
-update -ChecksumFor 32 -NoCheckChocoVersion
+update -ChecksumFor none
+
