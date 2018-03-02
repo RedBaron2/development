@@ -26,7 +26,7 @@ function global:au_SearchReplace {
 
 function Get360Version {
 param(
-    [string]$releases,
+       [string]$releases,
 	[string]$PackageName,
 	[string]$Title
 )
