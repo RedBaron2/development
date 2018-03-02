@@ -42,11 +42,11 @@ $stable = (( Get-RedirectedUrl 'https://www.dropbox.com/download?full=1&plat=win
 function global:au_GetLatest {
   $streams = [ordered] @{
     stable = GetDropbox -Title "Dropbox" -kind "" -nu_version $stable
-    beta = GetDropbox -Title "Dropbox Beta Build" -kind "-beta" -nu_version "44.3.56-beta"
+    beta = GetDropbox -Title "Dropbox Beta Build" -kind "-beta" -nu_version $stable
   }
 
   return @{ Streams = $streams }
 }
 
-update -ChecksumFor none
+update -ChecksumFor none -nocheckchocoversion
 
