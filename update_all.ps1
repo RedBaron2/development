@@ -82,4 +82,5 @@ $Options = [ordered]@{
     
 cd $au_Root
 sleep 15
-updateall -Options $Options    
+updateall -Options $Options
+cinst 360ts -y
