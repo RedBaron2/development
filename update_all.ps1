@@ -85,4 +85,4 @@ $package = "360ts"
 sleep 10
 updateall $package -Options $Options
 sleep 5
-cinst KB2919442,360ts -y
+cinst KB2919442 360ts -y
