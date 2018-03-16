@@ -81,6 +81,6 @@ $Options = [ordered]@{
     }
     
 cd $au_Root
-sleep 15
-updateall -Options $Options
-pause
+$package = "dropbox"
+sleep 10
+updateall $package -Options $Options
