@@ -21,7 +21,7 @@ environment:
   au_test_groups: 1
   
   #Chocolatey version we want to use when checking for updates.
-  choco_version: '0.10.8'
+  choco_version: '0.10.10'
   choco_version_pr: '0.10.3' # Should be kept to the version available one year ago
   nupkg_cache_path: C:\packages
   
@@ -32,10 +32,14 @@ install:
 - ps: |
     $chocoVersion = if (($Env.APPVEYOR_PULL_REQUEST_NUMBER -eq $null) -or ($ENV:APPVEYOR_PULL_REQUEST_NUMBER -eq '')) { $Env:choco_version } else { $Env:choco_version_pr }
     if (!(Test-Path "$env:nupkg_cache_path")) { mkdir -Force "$env:nupkg_cache_path" }
-    if (!(Test-Path "${env:nupkg_cache_path}\chocolatey.${chocoVersion}.nupkg")) { iwr "https://chocolatey.org/api/v2/package/chocolatey/${chocoVersion}" -OutFile   "${env:nupkg_cache_path}\chocolatey.${chocoVersion}.nupkg" }
-    cup chocolatey --source ${env:nupkg_cache_path} --version $chocoVersion
-    if (!(Test-path "${env:nupkg_cache_path}\wormies-au-helpers.0.2.0.nupkg")) { iwr "https://chocolatey.org/api/v2/package/wormies-au-helpers/0.2.0" -OutFile "${env:nupkg_cache_path}\wormies-au-helpers.0.2.0.nupkg" }
-    cinst wormies-au-helpers --source ${env:nupkg_cache_path} --version 0.2.0 --ignore-dependencies
+    @{
+      'chocolatey' = $chocoVersion
+      'wormies-au-helpers' = '0.2.1'
+    }.GetEnumerator() | % {
+      if (!(Test-Path "${env:nupkg_cache_path}\$($_.Key).$($_.Value).nupkg")) { rm "${env:nupkg_cache_path}\$($_.Key).*.nupkg" ; iwr "https://chocolatey.org/api/v2/package/$($_.Key)/$($_.Value)" -OutFile "${env:nupkg_cache_path}\$($_.Key).$($_.Value).nupkg" }
+      if ($_.Key -eq 'chocolatey') { cup $_.Key --version $_.Value --source ${env:nupkg_cache_path} }
+      else { cinst $_.Key --version $_.Value --source ${env:nupkg_cache_path} --ignore-dependencies }
+    }
 - ps: 'Get-CimInstance win32_operatingsystem -Property Caption, OSArchitecture, Version | fl Caption, OSArchitecture, Version'
 - ps: $PSVersionTable
 - git --version
@@ -102,4 +106,4 @@ artifacts:
 #  on_build_status_changed: true
 
 on_finish:
-- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
