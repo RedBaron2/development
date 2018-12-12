@@ -2,6 +2,7 @@
 function drpbx-compare {
 	param( 
 [Parameter(Position = 0)][string]$_version, [string]$build = 'stable' )
+ write-host "T build -$build-"
     $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
     $HTML = (Invoke-WebRequest -UseBasicParsing -Uri $releases).Links`
      | where {($_ -match $build)} | Select -First 6 | out-string
