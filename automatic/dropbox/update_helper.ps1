@@ -2,13 +2,23 @@
 function drpbx-compare {
 	param( 
 [Parameter(Position = 0)][string]$_version, [string]$build = 'stable' )
- write-host "F build -$build-"
+	if ($build -eq '') {$build = "Stable"}
     $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
     $HTML = (Invoke-WebRequest -UseBasicParsing -Uri $releases).Links`
      | where {($_ -match $build)} | Select -First 6 | out-string
     $re_dash = '-'; $re_dot = '.'; $re_non = ''; $re_build = $build + "-Build-";
     $version = (drpbx-builds -hrefs $HTML -testVersion $_version);
-    if ( $version -eq $null ) { $version=$_version; }
+    if ( $version -eq $null ) {
+		write-host "version -$version- null"
+		$json = (Get-Content "$PSScriptRoot\dropbox.json" -raw) | ConvertFrom-Json
+		if ($stable -ne ($json.beta)) {
+				write-host "we are stable -$stable-"
+				$version = $stable
+		} else {
+				write-host "we are default"
+				$version = $package.NuspecVersion
+		}
+	}
     return $version
 }
 
