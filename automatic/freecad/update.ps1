@@ -1,5 +1,8 @@
 import-module au
 
+$PreUrl = 'https://github.com'
+$releases = "$PreUrl/FreeCAD/FreeCAD/releases"
+$regex = "(\d+\.\d+\.\d+)"
 $softwareName = 'FreeCAD*'
 
 function global:au_SearchReplace {
@@ -19,13 +22,10 @@ function global:au_SearchReplace {
     }
     ".\tools\chocolateyUninstall.ps1" = @{
       "(?i)^(\s*softwareName\s*=\s*)'.*'" = "`${1}'$softwareName'"
+      "(?i)(^\s*fileType\s*=\s*)('.*')"       = "`$1'$($Latest.fileType)'"
     }
   }
 }
-
-$PreUrl = 'https://github.com'
-$releases = "$PreUrl/FreeCAD/FreeCAD/releases"
-$regex = "(\d+\.\d+\.\d+)"
 
 function Get-FreeCad {
 param(
