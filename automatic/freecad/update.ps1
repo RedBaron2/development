@@ -30,7 +30,7 @@ function global:au_SearchReplace {
 function Get-FreeCad {
 param(
     [string]$bitness,
-	[string]$Title,
+    [string]$Title,
     [string]$kind
 )
 
@@ -90,11 +90,11 @@ param(
   
 
  	@{
-		Title = $Title
-		URL32 = $PreUrl + $url32
-		URL64 = $PreUrl + $url64
-		Version = $vert
-        fileType = ($url32.Split("/")[-1]).Split(".")[-1]
+		Title      = $Title
+		URL32      = $PreUrl + $url32
+		URL64      = $PreUrl + $url64
+		Version    = $vert
+                fileType   = ($url32.Split("/")[-1]).Split(".")[-1]
 	}
 } 
 
