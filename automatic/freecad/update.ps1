@@ -1,20 +1,18 @@
 import-module au
 
-$PreUrl = 'https://github.com'
-$releases = "$PreUrl/FreeCAD/FreeCAD/releases"
 $softwareName = 'FreeCAD*'
 
 function global:au_SearchReplace {
   @{
     ".\tools\chocolateyInstall.ps1" = @{
-      "(?i)(^\s*url\s*=\s*)('.*')"          = "`$1'$($Latest.URL32)'"
-      "(?i)(^\s*url64\s*=\s*)('.*')"        = "`$1'$($Latest.URL64)'"
-      "(?i)(^\s*fileType\s*=\s*)('.*')"     = "`$1'$($Latest.fileType)'"
-      "(?i)(^\s*checksum\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum32)'"
-      "(?i)(^\s*checksum64\s*=\s*)('.*')"   = "`$1'$($Latest.Checksum64)'"
-      "(?i)(^\s*checksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
+      "(?i)(^\s*fileType\s*=\s*)('.*')"       = "`$1'$($Latest.fileType)'"
+      "(?i)(^\s*url\s*=\s*)('.*')"            = "`$1'$($Latest.URL32)'"
+      "(?i)(^\s*url64\s*=\s*)('.*')"          = "`$1'$($Latest.URL64)'"
+      "(?i)(^\s*checksum\s*=\s*)('.*')"       = "`$1'$($Latest.Checksum32)'"
+      "(?i)(^\s*checksum64\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum64)'"
+      "(?i)(^\s*checksumType\s*=\s*)('.*')"   = "`$1'$($Latest.ChecksumType32)'"
       "(?i)(^\s*checksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
-      "(?i)^(\s*softwareName\s*=\s*)'.*'" = "`${1}'$softwareName'"
+      "(?i)^(\s*softwareName\s*=\s*)'.*'"     = "`${1}'$softwareName'"
     }
     ".\freecad.nuspec" = @{
       "\<releaseNotes\>.+" = "<releaseNotes>$($Latest.ReleaseNotes)</releaseNotes>"
@@ -25,15 +23,21 @@ function global:au_SearchReplace {
   }
 }
 
+$PreUrl = 'https://github.com'
+$releases = "$PreUrl/FreeCAD/FreeCAD/releases"
+$regex = "(\d+\.\d+\.\d+)"
+
 function Get-FreeCad {
 param(
     [string]$bitness,
-    [string]$Title,
+	[string]$Title,
     [string]$kind
 )
 
 
   $download_page = Invoke-WebRequest -UseBasicParsing -Uri $releases
+  $try = (($download_page.Links | ? href -match "CAD\-|\.[\dA-Z]+\-WIN" | select -First 1 -expand href).Split("/")[-1]).Split(".")[-1]
+  Write-Host "try -$try-"
   $ext = @{$true='7z';$false='exe'}[( $kind -match 'dev' )]
   #write-host "ext -$ext-"
   $bit = @{$true='x86';$false='x64'}[( $bitness -match '32' )]
@@ -50,20 +54,18 @@ param(
   #write-host "O ver -$ver-"
   if ( $ver -eq 'DEV' ) {
   #write-host "A ver -$ver-"
-  $verRe32 = "CAD_|(\d\.\d+\.\d+)+_x86_dev_win"
-  $verRe64 = "CAD_|(\d\.\d+\.\d+)+_x64_dev_win"
+  $verRe32 = $verRe64 = "_"
   } else {
   #write-host "B ver -$ver-"
-  $verRe32 = $ver
-  $verRe64 = $ver
+  $verRe32 = $verRe64 = "-"
   }
   #Write-Host "verRe32 -$verRe32-"
   #Write-Host "verRe64 -$verRe64-"
-
-
-  [version]$version32 = $url32 -split "$verRe32" | select -last 1 -skip 1
+  ( Get-Version $url32 -Delimiter $verRe32 ) -match $regex | Out-Null
+  $version32 = $Matches[0]
   #Write-Host "A version32 -$version32-"
-  [version]$version64 = $url64 -split "$verRe64" | select -last 1 -skip 1
+  ( Get-Version $url64 -Delimiter $verRe64 ) -match $regex | Out-Null
+  $version64 = $Matches[0]
   #Write-Host "A version64 -$version64-"
 
   if ( $version32 -eq $version64 ) {
@@ -75,7 +77,7 @@ param(
   $version = $version64
   }
 
-  #Write-Host "version -$version-"
+  [version]$version32 = $url -split "$verRe32" | select -last 1 -skip 1
 
   if ( $kind -eq 'dev' ) {
     $vert = "$version-$kind";
@@ -92,6 +94,7 @@ param(
 		URL32 = $PreUrl + $url32
 		URL64 = $PreUrl + $url64
 		Version = $vert
+        fileType = ($url32.Split("/")[-1]).Split(".")[-1]
 	}
 } 
 
@@ -100,7 +103,6 @@ function global:au_GetLatest {
     stable = Get-FreeCad -Title "FreeCAD" -kind "stable"
     dev = Get-FreeCad -Title "FreeCAD" -kind "dev"
   }
-
   return @{ Streams = $streams }
 }
 
