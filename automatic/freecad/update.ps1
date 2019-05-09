@@ -34,7 +34,7 @@ param(
     [string]$kind
 )
 
-
+ $null = .{
   $download_page = Invoke-WebRequest -UseBasicParsing -Uri $releases
   $try = (($download_page.Links | ? href -match "CAD\-|\.[\dA-Z]+\-WIN" | select -First 1 -expand href).Split("/")[-1]).Split(".")[-1]
   Write-Host "try -$try-"
@@ -88,7 +88,7 @@ param(
   }
   #Write-Host "vert -$vert-"
   
-
+}
  	@{
 		Title      = $Title
 		URL32      = $PreUrl + $url32
