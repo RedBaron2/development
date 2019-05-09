@@ -16,7 +16,6 @@ This is the options for updateall AU
 
 #>
 
-Set-Alias posh-tee Write-Host
 $au_Root = '.\automatic';
 $au_NoCheckChocoVersion = $chocochk = $true;
 $timeout = 200
@@ -27,6 +26,7 @@ $push = $false
 $myDir = "${env:temp}\AU_Updates"
 $myAU_report = "AU_update_report.log"
 $myAU_report_xml = "AU_update_report.xml"
+$simp_log = $diag_log = "RBZ_logs.log"
 
 if ( $me -eq $null ) { $me=(${env:computername}) }
 $AUdiag_log = "$myDir\$me\" + "$myAU_report"
