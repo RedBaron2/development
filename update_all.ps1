@@ -7,8 +7,8 @@ modified on 2017-12-16
 param(
 [Parameter(Position = 0)]
 [string[]]$queue,
-[string]$timeout = 200,
-[string]$updatetimeout = 1300,
+[string]$timeout = "200",
+[string]$updatetimeout = "1300",
 [bool]$rbz_force = $false,
 [bool]$whatif = $false,
 [bool]$push = $false,
