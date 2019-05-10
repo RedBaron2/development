@@ -59,7 +59,7 @@ install:
     
 build_script:
 - ps: |
-    $rbzq = "360ts chromium dropbox falshplayer* freecad jre8 malwarebytes npe revouninstallerpro roguekiller tronscript windowsrepair wise*"
+    $rbzq = "360ts,chromium,dropbox,flashplayer*,freecad,jre8,malwarebytes,npe,revouninstallerpro,roguekiller,tronscript,windowsrepair,wise*"
     $ErrorActionPreference = 'Continue'
 
     if ($Env:APPVEYOR_PROJECT_NAME  -like '*test*') { ./test_all.ps1 "random $Env:au_test_groups"; return }
