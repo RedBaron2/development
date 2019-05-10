@@ -29,7 +29,7 @@ $Time = $Date + " "
 $orgDir = Get-Location
 $au_Root = '.\automatic';
 $rbz_dir = '.\Queue'
-	. (Join-Path $rbz_dir '.\tools\Reset-Log.ps1')
+	. (Join-Path $rbz_dir '.\Reset-Log.ps1')
 # $Global:NoCheckChocoVersion=$Global:AU_NoCheckChocoVersion = $true;
 $myDir = "${env:temp}\AU_Updates"
 $myAU_report = "AU_update_report.log"
