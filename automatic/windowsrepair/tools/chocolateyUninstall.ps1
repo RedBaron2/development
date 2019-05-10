@@ -1,4 +1,4 @@
-$packageName = 'windowsrepair'
+﻿$packageName = 'windowsrepair'
 $packageSearch = "Tweaking.com"
 $validExitCodes = @(0)
 

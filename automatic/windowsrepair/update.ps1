@@ -25,10 +25,10 @@ $null = .{
 	$HTML = Invoke-WebRequest $releases
 	$newt = ( $HTML.ParsedHtml.getElementsByTagName('div') | Where { $_.className -eq 'content'} ).innertext
 	$HTML.close
-	$i=0; foreach ($toad in $newt) { $i++; if ( $i -eq '8') { $log = ( $toad | Select -First 1 ) } }
-	$vers = $log -split "`n"
-	$verst = $vers[0] | where { $_ -match "(\d+\.?){3}" } | foreach { $matches[0] }
-	$version = ( $verst -replace('v',''))
+	#$i=0; foreach ($toad in $newt) { $i++; if ( $i -eq '8') { $log = ( $toad | Select -First 1 ) } }
+	#$vers = $log -split "`n"
+	$verst = $newt | where { $_ -match "(\d+\.?){3}" } | foreach { $matches[0] }
+	$version = ( $verst -replace('v','')) | Select -First 1
 	$url = "http://www.tweaking.com/files/setups/${fileName}"
     }
     @{
@@ -41,12 +41,12 @@ $null = .{
 }
 	
 	$ChkUrl = 'http://www.tweaking.com/articles/pages/tweaking_com_windows_repair_change_log,1.html'
-	
+
 function global:au_GetLatest {
 
   $streams = [ordered] @{
     portable = Wiggins -releases $ChkUrl -PackageName "windowsrepair.portable" -Title "Windows Repair Portable" -fileExt ".zip"
-    install = Wiggins -releases $ChkUrl -PackageName "windowsrepair.install" -Title "Windows Repair" -fileExt "_setup.exe"
+    install = Wiggins -releases $ChkUrl -PackageName "windowsrepair" -Title "Windows Repair" -fileExt "_setup.exe"
   }
 
   return @{ Streams = $streams }
