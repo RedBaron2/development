@@ -5,6 +5,7 @@ $packageArgs = @{
   fileType       = '7z'
   url            = 'https://github.com/FreeCAD/FreeCAD/releases/download/0.19_pre/FreeCAD_0.19.16653_x86_LP_11.11_PY2QT4-WinVS2013.7z'
   url64          = 'https://github.com/FreeCAD/FreeCAD/releases/download/0.19_pre/FreeCAD_0.19.16653_x64_Conda_Py3QT5-WinVS2015.7z'
+  UnzipLocation	 = "${env:Temp}"
   softwareName   = 'FreeCAD*'
   checksum       = '73d82746dae8b5d228cd769e7d75c0dcef735cacf4c8978850ebfd072a2326b3'
   checksumType   = 'sha256'
@@ -27,7 +28,7 @@ if (!$pp['WorkingDirectory']) { $pp['WorkingDirectory'] = $pp.UnzipLocation }
 if (!$pp['TargetPath']) { $pp['TargetPath'] = $pp['WorkingDirectory']+"\bin\${env:ChocolateyPackageTitle}.exe" }
 if (!$pp['IconLocation']) { $pp['IconLocation'] = $pp['TargetPath'] }
 if (!$pp['Arguments']) { $pp['Arguments'] = "" }
-if (!$pp['ShortcutFilePath']) { $pp['ShortcutFilePath'] = ( [Environment]::GetFolderPath('Desktop') ) }
+if (!$pp['ShortcutFilePath']) { $pp['ShortcutFilePath'] = ( [Environment]::GetFolderPath('Desktop') )+"\${env:ChocolateyPackageTitle}.lnk" }
 if (!$pp['Shortcut']) { $pp['Shortcut'] = $true }
 if (!$pp['WindowStyle']) { $pp['WindowStyle'] = 1 }
 
