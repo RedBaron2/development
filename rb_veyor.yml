@@ -91,7 +91,7 @@ build_script:
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
-    7z a All_nupkg_files.zip -r C:\projects\development\automatic\*.nupkg
+    7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
 artifacts:
 #- path: '**\*.nupkg'
