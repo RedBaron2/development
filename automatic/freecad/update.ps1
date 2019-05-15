@@ -9,8 +9,6 @@ $softwareName = 'FreeCAD*'
 function global:au_SearchReplace {
   @{
     ".\tools\chocolateyInstall.ps1" = @{
-      "(^[$]*fileName32\s*=\s*)('.*')"        = "`$1'$($Latest.URL32)'"
-      "(^[$]*fileName64\s*=\s*)('.*')"        = "`$1'$($Latest.URL64)'"
       "(?i)(^\s*fileType\s*=\s*)('.*')"       = "`$1'$($Latest.fileType)'"
       "(?i)(^\s*url\s*=\s*)('.*')"            = "`$1'$($Latest.URL32)'"
       "(?i)(^\s*url64\s*=\s*)('.*')"          = "`$1'$($Latest.URL64)'"
