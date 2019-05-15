@@ -33,7 +33,6 @@ if (!$pp['ShortcutFilePath']) { $pp['ShortcutFilePath'] = ( [Environment]::GetFo
 if (!$pp['Shortcut']) { $pp['Shortcut'] = $true }
 if (!$pp['WindowStyle']) { $pp['WindowStyle'] = 1 }
 
-
 $packageParams = @{
   ShortcutFilePath = $pp.ShortcutFilePath
   TargetPath = $pp.TargetPath
@@ -49,6 +48,11 @@ if ($pp['Admin']) {  $packageParams.Add( 'RunAsAdmin', $true ) }
 
 if ( $packageArgs.filetype -eq '7z' ) {
 Install-ChocolateyZipPackage @packageArgs
+$files = get-childitem $pp.WorkingDirectory -Exclude $packageArgs.softwareName -include *.exe -recurse
+foreach ($file in $files) {
+  #generate an ignore file
+  New-Item "$file.ignore" -type file -force | Out-Null
+}
 if ( $pp.Shortcut ) { Install-ChocolateyShortcut @packageParams }
 } else {
 Install-ChocolateyPackage @packageArgs
