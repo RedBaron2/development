@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop';
-. ".\chocolateyInstall.ps1"
+
+$pp = Get-PackageParameters
+# Checking for Package Parameters
+if (!$pp['UnzipLocation']) { $pp['UnzipLocation'] = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)" }
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
@@ -29,5 +32,5 @@ if ( $packageArgs.fileType -match 'exe' ) {
 	  $key | ForEach-Object { Write-Warning "- $($_.DisplayName)" }
 	}
 } else {
-	Remove-Item -Path $packageParms.ShortcutFilePath
+	Remove-Item -Path $pp.ShortcutFilePath
 }
