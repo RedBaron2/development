@@ -10,7 +10,7 @@ function global:au_BeforeUpdate {
 
 function global:au_SearchReplace {
 	@{
-    ".\tools\chocolateyInstall.ps1" = @{
+    ".\tools\packageArgs.ps1" = @{
 			"(?i)(^\s*PackageName\s*=\s*)('.*')" = "`$1'$($Latest.PackageName)'"
 			"(?i)(^\s*url\s*=\s*)('.*')" = "`$1'$($Latest.URL32)'"
 			"(?i)(^\s*url64bit\s*=\s*)('.*')"	= "`$1'$($Latest.URL64)'"
@@ -18,9 +18,7 @@ function global:au_SearchReplace {
 			"(?i)(^\s*ChecksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
 			"(?i)(^\s*Checksum64\s*=\s*)('.*')" = "`$1'$($Latest.Checksum64)'"
 			"(?i)(^\s*ChecksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
-      # "(^[$]packageName\s*=\s*)('.*')" = "`$1'$($Latest.PackageName)'"
-      # "(^[$]url64 \s*=\s*)('.*')" = "`$1'$($Latest.URL64)'"
-      # "(^[$]checksum64\s*=\s*)('.*')" = "`$1'$($Latest.Checksum64)'"
+			"(?i)(^\s*SoftwareName\s*=\s*)('.*')" = "`$1'$($Latest.Title)'"
 		}
     ".\adoptopenjdk.nuspec" = @{
 			"(?i)(^\s*\<id\>).*(\<\/id\>)" = "`${1}$($Latest.PackageName)`${2}"
@@ -36,36 +34,34 @@ param (
 	[string]$jvm = 'hotspot'
 )
 
-	write-host "P number -$number- build -$build- jvm -$jvm-"
+	# write-host "P number -$number- build -$build- jvm -$jvm-"
 
     $releases = "${PreUrl}/AdoptOpenJDK/openjdk${number}-binaries/releases"
     $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
     $url32  = $download_page.links | ? { $_.href -match "(.+)${build}_x86(.+)${jvm}(.+)\.zip$" } | select -First 1 -expand href
     $url64  = $download_page.links | ? { $_.href -match "(.+)${build}_x64(.+)${jvm}(.+)\.zip$" } | select -First 1 -expand href 
-    # $url32o = $download_page.links | ? { $_.href -match "(.+)${build}_x86(.+)openj9(.+)\.zip$" } | select -First 1 -expand href
-    # $url64o = $download_page.links | ? { $_.href -match "(.+)${build}_x64(.+)openj9(.+)\.zip$" } | select -First 1 -expand href 
 
     if ($url32 -match '(\du)(\d+){3}(b)(\d+){2,3}') {
     $version = ( $Matches[0] ) -replace('[u]','.0.') -replace('(b)','.')
     }
-    write-host "A number -$number-"
+    # write-host "A number -$number-"
     if (( $number -eq 9 )) {
-    write-host "B number -$number-"
+    # write-host "B number -$number-"
     $url64 -match '(\d+_\d+)' | Out-Null
     $version = ( $Matches[0] ) -replace('_','.0.')
     } 
     if (( $number -eq 10 )) {
-    write-host "C number -$number-"
+    # write-host "C number -$number-"
     $version = ( Get-Version (($url64) -replace('%2B','.')) )
     }
     if (( $number -eq 11 )-or ( $number -eq 12 )) {
-    write-host "D number -$number-"
+    # write-host "D number -$number-"
     $version = ( Get-Version (($url64) -replace('-','.')) )
     }
-    write-host "E jvm -$jvm-"
+    # write-host "E jvm -$jvm-"
     $JavaVM = @{$true="${build}${number}";$false="${build}${number}-${jvm}"}[ ( $jvm -match "hotspot" ) ]
-    write-host "F JavaVM -$JavaVM-"
-    write-host "Z version -$version-"
+    # write-host "F JavaVM -$JavaVM-"
+    # write-host "Z version -$version-"
 
     #build stream hashtable return
     if (( $url32 -ne $null) -or ($url64 -ne $null )){
@@ -74,20 +70,9 @@ param (
         if ($url64 -ne $null) { $hotspot.Add( 'URL64', $PreUrl + $url64 ) }
         $hotspot.Add( 'Version', $version )
         $hotspot.Add( 'Title', "AdoptOpenJDK ${jvm} ${build}${number} ${version}" )
-    write-host "H PackageName -AdoptOpenJDK-${JavaVM}${number}-"
+		write-host "H PackageName -AdoptOpenJDK-${JavaVM}${number}-"
         $hotspot.Add( 'PackageName', "AdoptOpenJDK-${JavaVM}" )
-    # Set-Variable -Name "adoptopenjdk${number}" -Value $hotspot
     }
-    # if (( $url32o -ne $null) -or ($url64o -ne $null )){
-    # $openj9 = @{}
-        # if ($url32 -ne $null) { $openj9.Add( 'URL32', $PreUrl + $url32o ) }
-        # if ($url64 -ne $null) { $openj9.Add( 'URL64', $PreUrl + $url64o ) }
-        # $openj9.Add( 'Version', $version )
-        # $openj9.Add( 'Title', "AdoptOpenJDK ${build} openj9 ${version}" )
-    # write-host "O PackageName -AdoptOpenJDK-${JavaVM}${number}-"
-        # $openj9.Add( 'PackageName', "AdoptOpenJDK-${JavaVM}" )
-    # New-Variable -Name "adoptopenjdk${number}openj9${build}" -Value $openj9
-    # }
 
     return ( $hotspot )
 }
