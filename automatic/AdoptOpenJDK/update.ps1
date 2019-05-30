@@ -31,7 +31,7 @@ function Get-AdoptOpenJDK {
 param (
     [string]$number,
     [string]$build,
-	[string]$jvm = 'hotspot'
+    [string]$jvm = 'hotspot'
 )
 
 	# write-host "P number -$number- build -$build- jvm -$jvm-"
@@ -70,7 +70,7 @@ param (
         if ($url64 -ne $null) { $hotspot.Add( 'URL64', $PreUrl + $url64 ) }
         $hotspot.Add( 'Version', $version )
         $hotspot.Add( 'Title', "AdoptOpenJDK ${jvm} ${build}${number} ${version}" )
-		write-host "H PackageName -AdoptOpenJDK-${JavaVM}${number}-"
+	write-host "H PackageName -AdoptOpenJDK-${JavaVM}${number}-"
         $hotspot.Add( 'PackageName', "AdoptOpenJDK-${JavaVM}" )
     }
 
