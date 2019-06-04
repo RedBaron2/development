@@ -1,7 +1,7 @@
 
 import-module au
 
-$releases = 'http://www.revouninstaller.com/revo_uninstaller_free_download.html'
+$releases = 'https://www.revouninstaller.com/products/revo-uninstaller-pro/'
 
 function global:au_SearchReplace {
   @{
@@ -15,9 +15,9 @@ function global:au_SearchReplace {
 
 function global:au_GetLatest {
 $HTML = Invoke-WebRequest -UseBasicParsing -Uri $releases
-$vlink = $HTML.Links | where{ ($_.href -match "revo_uninstaller_pro_full_version_history" ) } | select-object -first 1
+$vlink = $HTML.Links | where{ ($_ -match "revo-uninstaller-pro-full-version-history" ) } | select-object -first 1
 $dlink = $HTML.Links | where{ ($_.href -match "download-professional" ) } | select-object -first 1
-$url = 'http://' + (([System.Uri] $releases ).Host) + '/' + $dlink.href
+$url = 'http://' + (([System.Uri] $releases ).Host)  + $dlink.href
 $regex = '(\d(\.\d)*)'
 $vlink -match $regex
 $version = $Matches[0]
