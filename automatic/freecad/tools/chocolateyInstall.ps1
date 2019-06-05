@@ -22,7 +22,7 @@ $packageArgs = @{
 }
 
 $fileName = @{$true=($packageArgs.url);$false=($packageArgs.url64)}[ ((Get-OSBitness) -eq 32) ]
-$filename = $fileName -split('/'); $filename = ( $filename[-1] ); $filename = ( $filename -replace( "\.${packageArgs.fileType}", '' ) )
+$filename = $fileName -split('/'); $filename = ( $filename[-1] ); $filename = ( $filename -replace( "\.$($packageArgs.fileType)", '' ) )
 
 # Checking for Package Parameters
 if (!$pp['WorkingDirectory']) { $pp['WorkingDirectory'] = $pp.UnzipLocation+"\$filename" }
@@ -36,7 +36,7 @@ if (!$pp['WindowStyle']) { $pp['WindowStyle'] = 1 }
 $packageParams = @{
   ShortcutFilePath = $pp.ShortcutFilePath
   TargetPath = $pp.TargetPath
-  WorkingDirectory = $pp.WorkingDirect
+  WorkingDirectory = $pp.WorkingDirectory
   Arguments = $pp.Arguments
   IconLocation = $pp.IconLocation
   Description = "FreeCAD Development ${env:ChocolateyPackageVersion}"
