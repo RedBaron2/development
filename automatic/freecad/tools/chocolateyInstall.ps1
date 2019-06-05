@@ -1,30 +1,30 @@
 $ErrorActionPreference = 'Stop';
 
-$pp = Get-PackageParameters
+$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+
 # Checking for Package Parameters
-if (!$pp['UnzipLocation']) { $pp['UnzipLocation'] = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)" }
+$pp = Get-PackageParameters
+if (!$pp['UnzipLocation']) { $pp['UnzipLocation'] = "$toolsDir" }
 
 $packageArgs = @{
   packageName    = $env:ChocolateyPackageName
-  fileType       = '7z'
+  fileType       = ''
   url            = ''
   url64          = ''
   UnzipLocation	 = $pp.UnzipLocation
   softwareName   = 'FreeCAD*'
   checksum       = ''
-  checksumType   = 'sha256'
+  checksumType   = ''
   checksum64     = ''
-  checksumType64 = 'sha256'
+  checksumType64 = ''
   silentArgs     = '/S'
   validExitCodes = @(0)
 }
 
 $fileName = @{$true=($packageArgs.url);$false=($packageArgs.url64)}[ ((Get-OSBitness) -eq 32) ]
-$filename = $fileName -split('/')
-$filename = ( $filename[-1] )
-$extension = $filename -split('\.') | select -Last 1
-$filename = ( $filename -replace( "\.$extension", '' ) )
+$filename = $fileName -split('/'); $filename = ( $filename[-1] ); $filename = ( $filename -replace( "\.${packageArgs.fileType}", '' ) )
 
+# Checking for Package Parameters
 if (!$pp['WorkingDirectory']) { $pp['WorkingDirectory'] = $pp.UnzipLocation+"\$filename" }
 if (!$pp['TargetPath']) { $pp['TargetPath'] = $pp['WorkingDirectory']+"\bin\${env:ChocolateyPackageTitle}.exe" }
 if (!$pp['IconLocation']) { $pp['IconLocation'] = $pp['TargetPath'] }
@@ -57,3 +57,6 @@ if ( $pp.Shortcut ) { Install-ChocolateyShortcut @packageParams }
 } else {
 Install-ChocolateyPackage @packageArgs
 }
+
+# Exporting Package Parameters to json file in toolsdir
+$packageParams | ConvertTo-Json | Out-File  ( "$toolsDir\pp.json" )
