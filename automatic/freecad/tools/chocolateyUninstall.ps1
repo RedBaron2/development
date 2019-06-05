@@ -1,8 +1,7 @@
 $ErrorActionPreference = 'Stop';
 
-$pp = Get-PackageParameters
-# Checking for Package Parameters
-if (!$pp['UnzipLocation']) { $pp['UnzipLocation'] = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)" }
+$toolsDir = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$pp =( Get-Content "$toolsDir\pp.json" ) | ConvertFrom-Json 
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
