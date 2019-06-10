@@ -24,7 +24,7 @@ $null = .{
     $fileName = "tweaking.com_windows_repair_aio${fileExt}"
     $regex = '([\d]{0,4}[\.][\d]{0,4}[\.][\d]{0,4})';
     $test = Invoke-WebRequest $releases -UseBasicParsing
-    $version = ( $test.Content -split $RK_regex ) | select -First 10 | Select -last 7 | Select -First 1
+    $version = ( $test.Content -split $regex ) | select -First 10 | Select -last 7 | Select -First 1
     $test.close
     $url = "http://www.tweaking.com/files/setups/${fileName}"
     }
