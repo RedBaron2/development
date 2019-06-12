@@ -21,15 +21,12 @@ param(
 	[string]$fileExt
 )
 $null = .{
-	$fileName = "tweaking.com_windows_repair_aio${fileExt}"
-	$HTML = Invoke-WebRequest $releases
-	$newt = ( $HTML.ParsedHtml.getElementsByTagName('div') | Where { $_.className -eq 'content'} ).innertext
-	$HTML.close
-	#$i=0; foreach ($toad in $newt) { $i++; if ( $i -eq '8') { $log = ( $toad | Select -First 1 ) } }
-	#$vers = $log -split "`n"
-	$verst = $newt | where { $_ -match "(\d+\.?){3}" } | foreach { $matches[0] }
-	$version = ( $verst -replace('v','')) | Select -First 1
-	$url = "http://www.tweaking.com/files/setups/${fileName}"
+    $fileName = "tweaking.com_windows_repair_aio${fileExt}"
+    $regex = '([\d]{0,4}[\.][\d]{0,4}[\.][\d]{0,4})';
+    $test = Invoke-WebRequest $releases -UseBasicParsing
+    $version = ( $test.Content -split $regex ) | select -First 10 | Select -last 7 | Select -First 1
+    $test.close
+    $url = "http://www.tweaking.com/files/setups/${fileName}"
     }
     @{
 		PackageName = $PackageName
@@ -40,7 +37,7 @@ $null = .{
 	return
 }
 	
-	$ChkUrl = 'http://www.tweaking.com/articles/pages/tweaking_com_windows_repair_change_log,1.html'
+	$ChkUrl = 'https://www.tweaking.com/articles/pagesprinter/tweaking_com_windows_repair_change_log,1.html'
 
 function global:au_GetLatest {
 
