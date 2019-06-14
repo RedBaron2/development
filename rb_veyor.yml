@@ -86,7 +86,7 @@ build_script:
         }
     }
 
-    ./update_all.ps1 a* -chocochk $true
+    ./update_all.ps1 * -chocochk $true
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
