@@ -78,7 +78,7 @@ param (
 
 	$JavaVM = @{$true="${type}${number}";$false="${type}${number}-${jvm}"}[ ( $jvm -match "hotspot" ) ]
     $beta = @{$true="${version}";$false="${version}-${build}"}[ ( $build -eq "releases" ) ]
-    $PackageName = @{$true="AdoptOpenJDK-${JavaVM}";$false="${dev_named}"}[ ( $dev_named -eq "" ) ]
+    $PackageName = @{$true="AdoptOpenJDK-${JavaVM}";$false="${dev_name}"}[ ( $dev_name -eq "" ) ]
 
     #build stream hashtable return
     $hotspot = @{}
