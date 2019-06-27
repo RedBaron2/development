@@ -28,11 +28,11 @@ function global:au_SearchReplace {
 
 function Get-AdoptOpenJDK {
 param (
-    [string]$number,
+    [string]$number,             # java version
     [string]$type = 'jre',       # jdk or jre
     [string]$build = 'releases', # nightly for pre-releases
-    [string]$jvm = 'hotspot',
-	[string]$dev_name
+    [string]$jvm = 'hotspot',    # hotspot or nightly
+    [string]$dev_name            # orginal package name
 )
 
     $regex_1 = "(\d{4}\-\d{2}\-\d{2}\-\d{2}\-\d{2})"
