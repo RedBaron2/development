@@ -31,7 +31,7 @@ param (
     [string]$number,             # java version
     [string]$type = 'jre',       # jdk or jre
     [string]$build = 'releases', # nightly for pre-releases
-    [string]$jvm = 'hotspot',    # hotspot or nightly
+    [string]$jvm = 'hotspot',    # hotspot or openj9
     [string]$dev_name            # orginal package name
 )
 
@@ -97,53 +97,62 @@ $i = 8; $x = 0; $y = 0; $z = 0; $numbers = @("8","9","10","11","12"); $types = @
 $jvms = @("hotspot","openj9"); $builds = @("releases","nightly")
 
   $streams = [ordered] @{}
+  # First
 foreach ( $j in $numbers ) {
 
-if ($j -eq $numbers[-1]) { $name = "AdoptOpenJDK" }
-if ($j -eq 8 ) { $name = "AdoptOpenJDK${j}" }
+if ( $j -eq 12 ) { $name = "AdoptOpenJDK$($types[$x])" } elseif (( $j -eq 8 ) -or ( $j -eq 11 )) { $name = "AdoptOpenJDK${j}$($types[$x])" } else { $name = ""; }
+
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $z++; $i--; $name = ""
+# Second
 foreach ( $j in $numbers ) {
 
-if ($j -eq 8 ) { $name = "AdoptOpenJDK${j}$($builds[$z])" }
-if ($j -eq 11 ) { $name = "AdoptOpenJDK${j}$($builds[$z])" }
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $y++; $z--; $i--; $name = ""
+# Third
 foreach ( $j in $numbers ) {
 
-if ($j -eq $numbers[-1]) { $name = "AdoptOpenJDK${j}$($jvms[$y])$($builds[$z])" }
+if ( $j -eq 12 ) { $name = "AdoptOpenJDK$($jvms[$y])$($types[$x])" } else { $name = ""; }
+
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 }
 $z++; $i--; $name = ""
+# Fourth
 foreach ( $j in $numbers ) {
 
-if ($j -eq $numbers[-1]) { $name = "AdoptOpenJDK${j}$($jvms[$y])$($builds[$z])" }
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $x++; $y--; $z--; $i--; $name = ""
+# Fifth
 foreach ( $j in $numbers ) {
 
+if ( $j -eq 12 ) { $name = "AdoptOpenJDK" } elseif (( $j -eq 8 ) -or ( $j -eq 11 )) { $name = "AdoptOpenJDK${j}" } else { $name = ""; }
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $y++; $i--; $name = ""
+# Sixth
 foreach ( $j in $numbers ) {
+
+if ( $j -eq 12 ) { $name = "AdoptOpenJDK$($jvms[$y])$($types[$x])" } else { $name = ""; }
 
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $z++; $i--; $name = ""
+# Seventh
 foreach ( $j in $numbers ) {
 
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
 
 }
 $y--;  $i--; $name = ""
+# Eighth
 foreach ( $j in $numbers ) {
 
 $streams.Add( "$($types[$x])${j}_$($jvms[$y])_$($builds[$z])" , ( Get-AdoptOpenJDK -number $j -type "$($types[$x])" -jvm "$($jvms[$y])" -build "$($builds[$z])" -dev_name "${name}" ) )
