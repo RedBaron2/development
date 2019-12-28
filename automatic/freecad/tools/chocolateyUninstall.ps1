@@ -5,8 +5,8 @@ $pp = ( Get-Content "$PSScriptRoot\pp.json" ) | ConvertFrom-Json
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
-  softwareName  = 'FreeCAD*'
-  fileType      = '7z'
+  softwareName  = ''
+  fileType      = ''
   silentArgs    = '/S'
   validExitCodes= @(@(0))
 }
