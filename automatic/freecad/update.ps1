@@ -3,7 +3,6 @@ import-module au
  
 $PreUrl = 'https://github.com'
 $releases = "$PreUrl/FreeCAD/FreeCAD/releases"
-$regex = "(\d+\.\d+\.\d+)"
 $softwareName = 'FreeCAD*'
 
 function global:au_SearchReplace {
@@ -16,25 +15,28 @@ function global:au_SearchReplace {
       "(?i)(^\s*checksum64\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum64)'"
       "(?i)(^\s*checksumType\s*=\s*)('.*')"   = "`$1'$($Latest.ChecksumType32)'"
       "(?i)(^\s*checksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
-      "(?i)^(\s*softwareName\s*=\s*)'.*'"     = "`${1}'$softwareName'"
+      "(?i)^(\s*softwareName\s*=\s*)'.*'"     = "`$1'$($softwareName)'"
     }
     ".\freecad.nuspec" = @{
       "\<releaseNotes\>.+" = "<releaseNotes>$($Latest.ReleaseNotes)</releaseNotes>"
     }
     ".\tools\chocolateyUninstall.ps1" = @{
-      "(?i)^(\s*softwareName\s*=\s*)'.*'" = "`${1}'$softwareName'"
-      "(?i)(^\s*fileType\s*=\s*)('.*')"       = "`$1'$($Latest.fileType)'"
+      "(?i)^(\s*softwareName\s*=\s*)'.*'"    = "`$1'$($softwareName)'"
+      "(?i)(^\s*fileType\s*=\s*)('.*')"      = "`$1'$($Latest.fileType)'"
     }
   }
 }
 
+function global:au_BeforeUpdate {
+    Get-RemoteFiles -Purge -FileNameBase "$($Latest.PackageName)"
+}
+
 function global:au_GetLatest {
   $streams = [ordered] @{
-    stable = Get-FreeCad -Title "FreeCAD" -kind "stable"
-    dev = Get-FreeCad -Title "FreeCAD" -kind "dev"
+    stable = Get-FreeCad -Title "$softwareName"
+    dev = Get-FreeCad -Title "$softwareName" -kind "dev"
   }
   return @{ Streams = $streams }
 }
 
-update
-
+update -ChecksumFor none
