@@ -1,4 +1,3 @@
-
 $toolsDir = "$(Split-Path -Parent $MyInvocation.MyCommand.Definition)"
 
 function Get-FileName {
@@ -14,7 +13,7 @@ return $fileName
 function Get-UserPackageParams {
 param(
     [hashtable]$pp = ( Get-PackageParameters ),
-    [parameter(Mandatory=$false)][switch]$scrawl
+	[parameter(Mandatory=$false)][switch]$scrawl
 )
 $folderName = ( Get-FileName -thePackage $packageArgs )
 $New_pp = @{}
@@ -24,7 +23,7 @@ $New_pp = @{}
           $New_pp.add( "UnzipLocation", $pp.UnzipLocation )
         }
         if ([string]::IsNullOrEmpty($this.ShortcutFilePath)) {
-          $New_pp.add( "ShortcutFilePath", ( [Environment]::GetFolderPath('Desktop') )+"\${ChocolateyPackageName}.lnk" )
+          $New_pp.add( "ShortcutFilePath", ( [Environment]::GetFolderPath('Desktop') )+"\$packageArgs.PackageName.lnk" )
         } else {
           $New_pp.add( "ShortcutFilePath", $pp.ShortcutFilePath )
         }
@@ -37,16 +36,6 @@ $New_pp = @{}
           $New_pp.add( "WorkingDirectory", $New_pp.UnzipLocation+"\$folderName" )
         } else {
           $New_pp.add( "WorkingDirectory", $pp.WorkingDirectory )
-        }
-        if ([string]::IsNullOrEmpty($this.TargetPath)) {
-          $New_pp.add( "TargetPath", $New_pp.WorkingDirectory+"\bin\${ChocolateyPackageName}.exe" )
-        } else {
-          $New_pp.add( "TargetPath", $pp.TargetPath )
-        }
-        if ([string]::IsNullOrEmpty($pp.IconLocation)) {
-          $New_pp.add( "IconLocation", $New_pp.TargetPath )
-        } else { 
-          $New_pp.add( "IconLocation", $pp.IconLocation )
         }
         if ([string]::IsNullOrEmpty($pp.Description)) {
           $New_pp.add( "Description", "FreeCAD Development ${env:ChocolateyPackageVersion}" )
@@ -65,10 +54,19 @@ $New_pp = @{}
         }
         if (![string]::IsNullOrEmpty($pp.Shortcut)) {
           $New_pp.add( "Shortcut", $true )
+	  if ([string]::IsNullOrEmpty($this.TargetPath)) {
+	   $New_pp.add( "TargetPath", $New_pp.WorkingDirectory+"\bin\$packageArgs.PackageName.exe" )
+	  } else {
+	   $New_pp.add( "TargetPath", $pp.TargetPath )
+	  }
+	  if ([string]::IsNullOrEmpty($pp.IconLocation)) {
+	   $New_pp.add( "IconLocation", $New_pp.TargetPath )
+	  } else { 
+	   $New_pp.add( "IconLocation", $pp.IconLocation )
+	  }
         }
-		if ($scrawl) {
+	if ($scrawl) {
         $New_pp | ConvertTo-Json | Out-File ( "$toolsDir\pp.json" )
-		}
-
-    return $New_pp
+	}
+  return $New_pp
 }
