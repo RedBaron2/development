@@ -5,14 +5,14 @@
 
 $packageArgs = @{
   packageName    = $env:ChocolateyPackageName
-  fileType       = '7z'
+  fileType       = ''
   url            = ''
-  url64          = 'https://github.com/FreeCAD/FreeCAD/releases/download/0.19_pre/FreeCAD_0.19.19093_x64_Conda_Py3QT5-WinVS2015.7z'
-  softwareName   = 'FreeCAD*'
+  url64          = ''
+  softwareName   = ''
   checksum       = ''
   checksumType   = ''
-  checksum64     = '5F82D81FD6B2CC4CA898FF28F711FA360920E783BE408A6B0C885C19B0CFF754'
-  checksumType64 = 'sha256'
+  checksum64     = ''
+  checksumType64 = ''
   silentArgs     = '/S'
   validExitCodes = @(0)
 }
