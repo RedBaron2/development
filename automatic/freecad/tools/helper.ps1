@@ -14,7 +14,7 @@ return $fileName
 function Get-UserPackageParams {
 param(
     [hashtable]$pp = ( Get-PackageParameters ),
-	[parameter(Mandatory=$false)][switch]$scrawl
+    [parameter(Mandatory=$false)][switch]$scrawl
 )
 $folderName = ( Get-FileName -thePackage $packageArgs )
 $New_pp = @{}
