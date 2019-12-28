@@ -28,5 +28,8 @@ if ( $packageArgs.fileType -match 'exe' ) {
    $key | ForEach-Object { Write-Warning "- $($_.DisplayName)" }
   }
 } else {
-  Remove-Item -Path $pp.ShortcutFilePath
+  if ($pp.ShortcutFilePath) {
+   Remove-Item -Path $pp.ShortcutFilePath
+  }
+  Write-Information "All Files Removed"
 }
