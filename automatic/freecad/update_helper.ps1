@@ -5,9 +5,9 @@ param(
    [string]$kind = 'stable',
    [int]$filler = "0"
 )
-  $download_page = Invoke-WebRequest -UseBasicParsing -Uri $releases
+  $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
   $try = (($download_page.Links | ? href -match "CAD\-|\.[\dA-Z]+\-WIN" | select -First 1 -expand href).Split("/")[-1]).Split(".")[-1]
-  $ext = @{$true='7z';$false='exe'}[( $kind -match 'dev' )]; $ver = @{$true="DEV";$false="(\d\.\d+\.\d+\.\d+[Z-a].\d)"}[( $kind -match 'dev' )]
+  $ext = @{$true='7z';$false='exe'}[( $kind -match 'dev' )]
   $re32 = "(WIN)\-x32\-(installer)\.$ext";
   $re64 =  @{$true="(x64_Conda_Py3QT5-Win).+(\.$ext)$";$false="(WIN)\-x64\-(installer)\.$ext$"}[( $kind -match 'dev' )]
   $url32 = $download_page.Links | ? href -match $re32 | select -first 1 -expand href

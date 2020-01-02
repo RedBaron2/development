@@ -1,5 +1,6 @@
 import-module au
- . ".\update_helper.ps1"
+ if(!$PSScriptRoot){ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent }
+. "$PSScriptRoot\update_helper.ps1"
  
 $PreUrl = 'https://github.com'
 $releases = "$PreUrl/FreeCAD/FreeCAD/releases"
