@@ -1,7 +1,6 @@
 ﻿$ErrorActionPreference = 'Stop';
 
 if(!$PSScriptRoot){ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent }
-$pp = ( Get-Content "$PSScriptRoot\pp.json" ) | ConvertFrom-Json 
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
@@ -28,6 +27,7 @@ if ( $packageArgs.fileType -match 'exe' ) {
    $key | ForEach-Object { Write-Warning "- $($_.DisplayName)" }
   }
 } else {
+$pp = ( Get-Content "$PSScriptRoot\pp.json" ) | ConvertFrom-Json 
 if ($pp.ShortcutFilePath) {
   Remove-Item -Path $pp.ShortcutFilePath
 }
