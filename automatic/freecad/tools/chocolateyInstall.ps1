@@ -25,8 +25,7 @@ if ( $packageArgs.filetype -eq '7z' ) {
   if ($pp.Shortcut) { Install-ChocolateyShortcut @pp }
   $files = get-childitem $pp.WorkingDirectory -Exclude $packageArgs.softwareName -include *.exe -recurse
   foreach ($file in $files) {
-    # Generate an ignore file(s)
-    New-Item "$file.ignore" -type file -force | Out-Null
+    New-Item "$file.ignore" -type file -force | Out-Null # Generate an ignore file(s)
   }
 } else {
   Install-ChocolateyPackage @packageArgs
