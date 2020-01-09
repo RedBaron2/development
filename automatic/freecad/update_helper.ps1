@@ -5,7 +5,6 @@ param(
    [string]$kind = 'stable',
    [int]$filler = "0"
 )
-  $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
   $portable = @{$true="portable";$false="installer"}[($kind -eq 'portable')]
   $try = (($download_page.Links | ? href -match "CAD\-|\.[\dA-Z]+\-WIN" | select -First 1 -expand href).Split("/")[-1]).Split(".")[-1]
   $ext = @{$true='7z';$false='exe'}[( $kind -match 'dev' ) -or ( $portable -match 'portable' )]

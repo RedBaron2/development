@@ -9,6 +9,7 @@ $softwareName = 'FreeCAD'
 function global:au_SearchReplace {
   @{
     ".\tools\chocolateyInstall.ps1" = @{
+      "(?i)(^\s*packageName\s*=\s*)'.*'"	  = "`$1'$($Latest.PackageName)'"
       "(?i)(^\s*fileType\s*=\s*)('.*')"       = "`$1'$($Latest.fileType)'"
       "(?i)(^\s*url\s*=\s*)('.*')"            = "`$1'$($Latest.URL32)'"
       "(?i)(^\s*url64\s*=\s*)('.*')"          = "`$1'$($Latest.URL64)'"
@@ -16,7 +17,7 @@ function global:au_SearchReplace {
       "(?i)(^\s*checksum64\s*=\s*)('.*')"     = "`$1'$($Latest.Checksum64)'"
       "(?i)(^\s*checksumType\s*=\s*)('.*')"   = "`$1'$($Latest.ChecksumType32)'"
       "(?i)(^\s*checksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
-      "(?i)(^\s*softwareName\s*=\s*)'.*'"     = "`$1'$($softwareName)*'"
+      "(?i)(^\s*softwareName\s*=\s*)'.*'"     = "`$1'$($softwareName)'"
     }
     ".\freecad.nuspec" = @{
 	  "(?i)(^\s*\<id\>).*(\<\/id\>)"                     = "`${1}$($Latest.PackageName)`${2}"
@@ -24,7 +25,8 @@ function global:au_SearchReplace {
 	  "(?i)(^\s*\<releaseNotes\>).*(\<\/releaseNotes\>)" = "`${1}$($Latest.ReleaseNotes)`${2}"
     }
     ".\tools\chocolateyUninstall.ps1" = @{
-      "(?i)^(\s*softwareName\s*=\s*)'.*'" = "`$1'$($softwareName)*'"
+      "(?i)(^\s*packageName\s*=\s*)'.*'"  = "`$1'$($Latest.PackageName)'"
+      "(?i)^(\s*softwareName\s*=\s*)'.*'" = "`$1'$($softwareName)'"
       "(?i)(^\s*fileType\s*=\s*)('.*')"   = "`$1'$($Latest.fileType)'"
     }
   }
@@ -39,10 +41,11 @@ function global:au_BeforeUpdate {
 }
 
 function global:au_GetLatest {
+  $download_page = Invoke-WebRequest -Uri $releases -UseBasicParsing
   $streams = [ordered] @{
+    dev = Get-FreeCad -Title "${softwareName}" -kind "dev"
     stable = Get-FreeCad -Title "${softwareName}"
 	portable = Get-FreeCad -Title "${softwareName}" -kind "portable"
-    dev = Get-FreeCad -Title "${softwareName}" -kind "dev"
   }
   return @{ Streams = $streams }
 }

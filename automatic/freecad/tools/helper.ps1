@@ -5,10 +5,11 @@ function Get-FileName {
 param(
     [hashtable]$thePackage
 )
-$bits = ((Get-OSBitness) -eq 32)
-$fileName = @{$true=($thePackage.url);$false=($thePackage.url64)}[ $bits ]
-$fileName = ((($fileName -split('/'))[-1]) -replace( "\.$($thePackage.fileType)", '' ) )
-if ([string]::IsNullOrEmpty($fileName)){ throw "$fileName is Empty using Default"; $fileName = $packageArgs.PackageName }
+$fileName = ((($thePackage.url64 -split('/'))[-1]) -replace( "\.$($thePackage.fileType)", '' ) )
+if ($fileName -match "portable") { $version = ( Get-Version $fileName ).Version;
+  [version]$version = ( ( ($version.Major),($version.Minor),($version.Build) ) -join "." )
+  if ($version -ge "0.18.4") { $fileName = "conda-${version}" }
+}
 return $fileName
 }
 
@@ -57,7 +58,7 @@ $New_pp = @{}
            $New_pp.add( "ShortcutFilePath", $pp.ShortcutFilePath )
           }
           if ([string]::IsNullOrEmpty($this.TargetPath)) {
-           $New_pp.add( "TargetPath", $New_pp.WorkingDirectory+"\bin\"+$packageArgs.PackageName+".exe" )
+           $New_pp.add( "TargetPath", $New_pp.WorkingDirectory+"\bin\"+$packageArgs.softwareName+".exe" )
           } else {
            $New_pp.add( "TargetPath", $pp.TargetPath )
           }

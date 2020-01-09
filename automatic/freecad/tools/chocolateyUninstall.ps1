@@ -3,7 +3,7 @@
 if(!$PSScriptRoot){ $PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent }
 
 $packageArgs = @{
-  packageName   = $env:ChocolateyPackageName
+  packageName   = ''
   softwareName  = ''
   fileType      = ''
   silentArgs    = '/S'
@@ -28,8 +28,7 @@ if ( $packageArgs.fileType -match 'exe' ) {
   }
 } else {
 $pp = ( Get-Content "$PSScriptRoot\pp.json" ) | ConvertFrom-Json 
-if ($pp.ShortcutFilePath) {
-  Remove-Item -Path $pp.ShortcutFilePath
-}
+if ($pp.ShortcutFilePath) { Remove-Item -Path $pp.ShortcutFilePath }
+if ($pp.UnzipLocation) { Remove-Item  -Path $pp.UnzipLocation -ErrorAction SilentlyContinue -Recurse -Force }
 Write-Information "All files Removed"  
 }
