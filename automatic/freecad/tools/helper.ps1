@@ -6,10 +6,10 @@ param(
     [hashtable]$thePackage
 )
 $fileName = ((($thePackage.url64 -split('/'))[-1]) -replace( "\.$($thePackage.fileType)", '' ) )
-if ($fileName -match "portable") { $version = ( Get-Version $fileName ).Version;
-  [version]$version = ( ( ($version.Major),($version.Minor),($version.Build) ) -join "." )
-  if ($version -ge "0.18.4") { $fileName = "conda-${version}" }
-}
+ if ($fileName -match "portable") { 
+ $version = ((($thePackage.url64 -split('/'))[-2]) -replace( "[A-z]", '' ) )
+   if ($version -ge "0.18.4") { $fileName = "conda-${version}" }
+ }
 return $fileName
 }
 
