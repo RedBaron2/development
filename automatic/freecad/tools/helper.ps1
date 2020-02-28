@@ -40,7 +40,8 @@ $New_pp = @{}
 		$New_pp.add( "WorkingDirectory", $pp.WorkingDirectory )
 	}
 	if ([string]::IsNullOrEmpty($pp.Description)) {
-		$New_pp.add( "Description", "FreeCAD Development ${env:ChocolateyPackageVersion}" )
+		$Naming = @{$true="";$false="Development"}[ ($folderName -match "portable")]
+		$New_pp.add( "Description", "FreeCAD $Naming ${env:ChocolateyPackageVersion}" )
 	} else { 
 		$New_pp.add( "Description", $pp.Description )
 	}
