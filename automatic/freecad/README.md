@@ -19,4 +19,4 @@ FreeCAD is based on OpenCasCade, a powerful geometry kernel, features an Open In
 - `/NoShortcut` - This will set not place the Shortcut on the Desktop by default.
 - `/WindowStyle` - The normal window setting for most Applications is as a Window. Maximised Window would be 3.
 
-Example: `choco install freecad --params "/UnzipLocation:'C:\FreeCAD' /NoShortcut"`
+Example: `choco install freecad --params "/InstallDir:'C:\FreeCAD' /NoShortcut"`
