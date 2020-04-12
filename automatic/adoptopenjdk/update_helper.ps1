@@ -3,7 +3,8 @@ function Optimize-DataSet {
 [CmdletBinding()]
 param(
 	[Parameter(ValueFromPipeline)]
-	[pscustomobject]$data
+	[pscustomobject]$data,
+	[switch]$warn
 )
 $me = ( $MyInvocation.MyCommand )
 Write-Verbose "$me data -$data-"
@@ -42,7 +43,7 @@ switch -Regex ($data) {
  }
  Write-Verbose "$me dataSet -$dataSet-"
  if ($dataSet -notmatch ".\d{2}$") {
- Write-Warning "dataSet is already optimized. returning orginal data"
+ if ($warn) { Write-Warning "dataSet is already optimized. returning orginal data" }
  $dataSet = $data
  }
  if (($delimiter -ne "\s") -and ($dataSet -notmatch "\d{21}")) {
@@ -179,6 +180,11 @@ $number = ($major, $year, $month, $day) -join "."
 Write-Verbose "$me Using ea versioning number -$number-"
 } elseif ((![string]::IsNullOrEmpty($major) ) -and (![string]::IsNullOrEmpty($minor) ) -and (![string]::IsNullOrEmpty($patch) )) {
 Write-Verbose "$me B major -$major- minor -$minor- patch -$patch-"
+<# BOL Fix for the Current Issue of Version 8 Builds on Chocolatey #>
+if (( $major -eq "8" )) { $minor = $minor+$patch; $patch = $null
+    Write-Verbose "$me Detected major as 8 correcting to bad version";
+    Write-Verbose "$me B1 Major -$major- Minor -$minor- patch -$patch-" }
+<# EOL Fix for the Current Issue of Version 8 Builds on Chocolatey #>
 $number = ($major, $minor, $patch) -join "."
 Write-Verbose "$me Using semver versioning number -$number-"
 } else {
