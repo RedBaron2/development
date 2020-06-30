@@ -6,7 +6,7 @@ $releases = 'https://owncloud.org/download/#install-clients'
 $softwareName = 'ownCloud'
 
 function global:au_BeforeUpdate { 
-[System.Net.ServicePointManager]::SecurityProtocol = 'Ssl3,Tls,Tls11,Tls12,Tls13' #https://github.com/chocolatey/chocolatey-coreteampackages/issues/366
+[System.Net.ServicePointManager]::SecurityProtocol = 'Tls13' #https://github.com/chocolatey/chocolatey-coreteampackages/issues/366
 Get-RemoteFiles -Purge -NoSuffix
 }
 
