@@ -5,10 +5,7 @@ import-module au
 $releases = 'https://owncloud.org/download/#install-clients'
 $softwareName = 'ownCloud'
 
-function global:au_BeforeUpdate { 
-[System.Net.ServicePointManager]::SecurityProtocol = 'Tls13' #https://github.com/chocolatey/chocolatey-coreteampackages/issues/366
-Get-RemoteFiles -Purge -NoSuffix
-}
+function global:au_BeforeUpdate { Get-RemoteFiles -Purge -NoSuffix }
 
 function global:au_SearchReplace {
   @{
@@ -60,6 +57,22 @@ function global:au_GetLatest {
           Version = $version.ToString()
           URL32   = $_
           Title   = if ($_ -match 'testing') { "ownCloud Windows Client (Technical Preview)" } else { "ownCloud Windows Client" }
+					Options = @{
+						"method"="GET"
+						"authority"="download.owncloud.com"
+						"scheme"="https"
+						"path"="/desktop/stable/($_ -split '\')[-1]"
+						"upgrade-insecure-requests"="1"
+						"user-agent"="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4109.0 Safari/537.36"
+						"accept"="text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+						"sec-fetch-site"="cross-site"
+						"sec-fetch-mode"="navigate"
+						"sec-fetch-user"="?1"
+						"sec-fetch-dest"="document"
+						"referer"="https://owncloud.org/"
+						"accept-encoding"="gzip, deflate, br"
+						"accept-language"="en-US,en;q=0.9"
+					}
         })
     }
   }
