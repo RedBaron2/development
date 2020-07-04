@@ -86,7 +86,7 @@ build_script:
         }
     }
 
-    ./update_all.ps1 ad* -chocochk $true
+    ./update_all.ps1 ddu* -chocochk $true
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
@@ -107,4 +107,4 @@ artifacts:
 #  on_build_status_changed: true
 
 on_finish:
-# - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
