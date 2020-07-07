@@ -216,6 +216,7 @@ cd $au_Root
 sleep 5
 updateall $queue -Options $Options
 MoveIt
+Test-Package -Nu "$PSScriptRoot\packages" -Install -Uninstall
 cd $orgDir
 sleep 5
 posh-tee "$Time Finishing $queue`r`n"
