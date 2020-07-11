@@ -15,7 +15,6 @@ param( [string]$default = '27.3.21', [string]$hrefs, [string]$testVersion )
     $links = $hrefs -split ( '\/' ); $build = @(); $regex = ($re_build);
     $Maj = ($vers.Major.ToString()).length; $Min = ($vers.Minor.ToString()).length;
     $Bui = ($vers.build.ToString()).length;
-    write-warning "maj -$Maj- min -$Min- bui -$Bui-"
     foreach($_ in $links) { foreach($G in $_) {
         if ($G -match "([\d]{$Maj}[\-]{1}[\d]{$Min}[\-]{1}[\d]{$Bui})") {
             $G = $G -replace($regex,$re_non) -replace($re_dash,$re_dot) -replace('New.',$re_non);
