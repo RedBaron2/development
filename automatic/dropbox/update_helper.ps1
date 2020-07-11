@@ -1,56 +1,23 @@
-Import-Module au
-import-module "$PSScriptRoot\..\..\scripts\au_extensions.psm1"
-. "$PSScriptRoot\update_helper.ps1"
 
-function global:au_SearchReplace {
-  @{
-    ".\tools\chocolateyInstall.ps1" = @{
-      "(^[$]version\s*=\s*)('.*')" = "`$1'$($Latest.RemoteVersion)'"
-      "(?i)(^\s*url\s*=\s*)('.*')" = "`$1'$($Latest.URL32)'"
-      "(?i)(^\s*checksum\s*=\s*)('.*')" = "`$1'$($Latest.Checksum32)'"
-      "(?i)(^\s*checksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
-    }
-  }
+function drpbx-compare {
+param( [Parameter(Position = 0)][string]$_version, [string]$build )
+    if ([string]::IsNullOrEmpty($build)) { $build = 'stable' }
+    $releases = 'https://www.dropboxforum.com/t5/Desktop-client-builds/bd-p/101003016'
+    $HTML = (Invoke-WebRequest -UseBasicParsing -Uri $releases).Links`
+     | where {($_ -match $build)} | Select -First 6 | out-string
+    $re_dash = '-'; $re_dot = '.'; $re_non = ''; $re_build = $build + "build";
+    $version = (  (drpbx-builds -hrefs $HTML -testVersion $_version) );
+    return $version
 }
 
-function global:au_BeforeUpdate {
-  $Latest.ChecksumType32 = 'sha256'
-  $Latest.Checksum32 = Get-RemoteChecksum -Algorithm $Latest.ChecksumType32 -Url $Latest.URL32
+function drpbx-builds {
+param( [string]$default = '27.3.21', [string]$hrefs, [string]$testVersion )
+    $links = $hrefs -split ( '\/' ); $build = @(); $regex = ($re_build);
+    foreach($_ in $links) { foreach($G in $_) {
+        if ($G -match '([\d]{$Maj}[\-]{1}[\d]{$Min}[\-]{1}[\d]{$Bui})') {
+            $G = $G -replace($regex,$re_non) -replace($re_dash,$re_dot) -replace('New.',$re_non);
+            if (($G -ge $default) -and ($G -ge $testVersion)) { $build += $G + ";" } }
+        if (($build | measure).Count -ge '6') { $build = ($build | measure -Maximum).Maximum; break; }
+    } }
+	return ($build | select -First 1)
 }
-  
-function GetDropbox {
-param(
-  [string]$nu_version,
-  [string]$Title,
-  [string]$kind
-)
-  $build = @{$true='-beta';$false=''}[( $kind -match '-' )]
-  $oldversion = ($nu_version -replace($build,''));
-  $beta = ( drpbx-compare $oldversion -build ($build -replace('-','')) )
-  $beta = ( Get-Version $beta ).Version
-  # URL no longer valid as of 02/23/2018 $url = "https://dl-web.dropbox.com/u/17/Dropbox%20${beta}.exe"
-  $url32 = Get-RedirectedUrl "https://www.dropbox.com/download?build=${beta}&plat=win&type=full"
-  $version = -join ($beta , $build)
-  @{
-    Title         = $Title
-    URL32         = $url32
-    Version       = $version
-    RemoteVersion = $beta
-  }
-}
-
-$vers = (Get-Version (( Get-RedirectedUrl 'https://www.dropbox.com/download?full=1&plat=win') -replace('%20',''))).Version
-$Maj = ($vers.Major.ToString()).length; $Min = ($vers.Minor.ToString()).length; $Bui = ($vers.build.ToString()).length;  
-$stable = -join ( $vers.Major, "." , $vers.Minor, "." , $vers.Build )
-
-function global:au_GetLatest {
-  $streams = [ordered] @{
-    stable = GetDropbox -Title "Dropbox" -kind "" -nu_version $stable
-    beta = GetDropbox -Title "Dropbox Beta Build" -kind "-beta" -nu_version $stable
-  }
-
-  return @{ Streams = $streams }
-}
-
-update -ChecksumFor none
-
