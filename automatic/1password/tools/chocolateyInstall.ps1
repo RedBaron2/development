@@ -8,7 +8,7 @@ $packageArgs = @{
   checksum       = ''
   checksumType   = ''
   silentArgs     = ''
-  validExitCodes = @(0)
+  validExitCodes = @(1)
 }
 
 if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--silent --setup" }
