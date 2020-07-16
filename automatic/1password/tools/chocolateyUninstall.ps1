@@ -1,6 +1,6 @@
 ﻿$ErrorActionPreference = 'Stop'
 
-[array]$key = ( Get-UninstallRegistryKey -SoftwareName "1Password*" ).UninstallString
+[array]$key = ( Get-UninstallRegistryKey -SoftwareName $env:ChocolateyPackageName ).UninstallString
 
 $packageArgs    = @{
     packageName = $env:ChocolateyPackageName
