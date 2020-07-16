@@ -8,4 +8,4 @@ $packageArgs    = @{
     File        = $key
 }
 
-Uninstall-ChocolateyPackage @packageArgs
+if ($packageArgs.packageName -ne "1password4") { Uninstall-ChocolateyPackage @packageArgs }
