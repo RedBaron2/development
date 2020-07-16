@@ -11,6 +11,6 @@ $packageArgs = @{
   validExitCodes = @(0)
 }
 
-if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--silent --" }
+if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--silent --setup" }
 
 Install-ChocolateyPackage @packageArgs
