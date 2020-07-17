@@ -11,6 +11,8 @@ $packageArgs = @{
   validExitCodes = @(1)
 }
 
-if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--silent --setup" }
+if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--silent" }
 
-Install-ChocolateyPackage @packageArgs
+do { Install-ChocolateyPackage @packageArgs }
+
+while (!( Get-Process "1password" ) )
