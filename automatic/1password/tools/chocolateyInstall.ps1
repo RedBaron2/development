@@ -8,7 +8,7 @@ $packageArgs = @{
   checksum       = ''
   checksumType   = ''
   silentArgs     = ''
-  validExitCodes = @(1)
+  validExitCodes = @(0)
 }
 
 if ([string]::IsNullOrEmpty($packageArgs.silentArgs)) { $packageArgs.silentArgs = "--help" }
