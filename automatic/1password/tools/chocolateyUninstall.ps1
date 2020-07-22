@@ -1,5 +1,6 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 
+if (${env:ChocolateyPackageName} -ne "1password4") {
 [array]$key = ( Get-UninstallRegistryKey -SoftwareName "${env:ChocolateyPackageName}*" ).UninstallString
 $file = ($key -split " ")[0]
 
@@ -8,5 +9,5 @@ $proc = ( Get-Process $env:ChocolateyPackageName ).Id
 Stop-Process -Id $proc
 $filepath,$arguments = ($key -split " ")[0]
 if ($arguments -eq $null) { Write-Warning "arguments is null"; $arguments = "uninstall" }
-Write-Warning "The fp -$filepath- arg -$arguments-"
 sleep 10; Start-Process -FilePath $filepath -ArgumentList $arguments
+}
