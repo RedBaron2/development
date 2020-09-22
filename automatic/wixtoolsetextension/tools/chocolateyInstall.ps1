@@ -1,14 +1,15 @@
-﻿$ErrorActionPreference = 'Stop';
+$ErrorActionPreference = 'Stop';
 
-[array]$key = Get-UninstallRegistryKey -SoftwareName "Visual Studio"
+$year = ''
+[array]$key = Get-UninstallRegistryKey -SoftwareName "Visual Studio*"
 
-if ($key.UninstallString) {
+if ($key.DisplayName -match "$year") {
 $toolsPath = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
 $packageArgs = @{
-  packageName    = 'wixtoolset-visualstudio2017extension'
+  packageName    = ''
   fileType       = 'vsix'
-  VsixUrl        = "file://$toolsPath/Votive2017.vsix"
+  VsixUrl        = "file://$toolsPath/test.exe"
 }
 
 Install-ChocolateyVsixPackage @packageArgs
