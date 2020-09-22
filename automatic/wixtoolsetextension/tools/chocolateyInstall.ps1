@@ -4,11 +4,11 @@ $year = ''
 [array]$key = Get-UninstallRegistryKey -SoftwareName "Visual Studio*"
 
 if ($key.DisplayName -match "$year") {
-$toolsPath = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
+$toolsPath = ( "$(Split-Path -parent $MyInvocation.MyCommand.Definition)" ) -replace("\", "/")
 
 $packageArgs = @{
   packageName    = ''
-  fileType       = 'vsix'
+  fileType       = ''
   VsixUrl        = "file://$toolsPath/test.exe"
 }
 
