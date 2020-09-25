@@ -91,6 +91,7 @@ build_script:
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
+    Test-Package -Nu "C:\projects\development\packages\*11*.nupkg" -Install -Uninstall -Parameters "/ADDLOCAL=FeatureMain,FeatureEnvironment,FeatureJarFileRunWith,FeatureJavaHome /INSTALLDIR=${env:ProgramFiles}\AdoptOpenJDKxxx\ /quiet"
     7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
 artifacts:
