@@ -232,7 +232,7 @@ $data = $data  -replace( "<$item>" , $($new_info[$i]) )
 $i++
 }
 
-Write-Verbose "data -$data-"
+Write-Verbose "$me data -$data-"
 $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 [System.IO.File]::WriteAllLines("$pwd/README.md", $data, $Utf8NoBomEncoding)
 

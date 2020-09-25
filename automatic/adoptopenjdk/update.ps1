@@ -22,31 +22,33 @@ function global:au_SearchReplace {
   if ( [string]::IsNullOrEmpty($Latest.URL32) ) {
 		@{
 			".\tools\chocolateyinstall.ps1" = @{
-				"(?i)(^\s*PackageName\s*=\s*)('.*')" = "`$1'$($Latest.PackageName)'"
-				"(?i)(^\s*url64bit\s*=\s*)('.*')"	= "`$1'$($Latest.URL64)'"
-				"(?i)(^\s*Checksum64\s*=\s*)('.*')" = "`$1'$($Latest.Checksum64)'"
-				"(?i)(^\s*ChecksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
+				"(?i)(^\s*PackageName\s*=\s*)('.*')"           = "`$1'$($Latest.PackageName)'"
+				"(?i)(^\s*fileType\s*=\s*)('.*')"              = "`$1'$($Latest.fileType)'"
+				"(?i)(^\s*url64bit\s*=\s*)('.*')"	             = "`$1'$($Latest.URL64)'"
+				"(?i)(^\s*Checksum64\s*=\s*)('.*')"            = "`$1'$($Latest.Checksum64)'"
+				"(?i)(^\s*ChecksumType64\s*=\s*)('.*')"        = "`$1'$($Latest.ChecksumType64)'"
 			}
 			".\adoptopenjdk.nuspec" = @{
-				"(?i)(^\s*\<title\>).*(\<\/title\>)" = "`${1}$($Latest.Title)`${2}"
-				"(?i)(^\s*\<summary\>).*(\<\/summary\>)" = "`${1}$($Latest.summary)`${2}"
+				"(?i)(^\s*\<title\>).*(\<\/title\>)"           = "`${1}$($Latest.Title)`${2}"
+				"(?i)(^\s*\<summary\>).*(\<\/summary\>)"       = "`${1}$($Latest.summary)`${2}"
 				"(?i)(^\s*\<licenseUrl\>).*(\<\/licenseUrl\>)" = "`${1}$($Latest.LicenseUrl)`${2}"
 			}
 		}
 	} else {
 		@{
 			".\tools\chocolateyinstall.ps1" = @{
-				"(?i)(^\s*PackageName\s*=\s*)('.*')" = "`$1'$($Latest.PackageName)'"
-				"(?i)(^\s*url\s*=\s*)('.*')" = "`$1'$($Latest.URL32)'"
-				"(?i)(^\s*url64bit\s*=\s*)('.*')"	= "`$1'$($Latest.URL64)'"
-				"(?i)(^\s*Checksum\s*=\s*)('.*')" = "`$1'$($Latest.Checksum32)'"
-				"(?i)(^\s*ChecksumType\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType32)'"
-				"(?i)(^\s*Checksum64\s*=\s*)('.*')" = "`$1'$($Latest.Checksum64)'"
-				"(?i)(^\s*ChecksumType64\s*=\s*)('.*')" = "`$1'$($Latest.ChecksumType64)'"
+				"(?i)(^\s*PackageName\s*=\s*)('.*')"           = "`$1'$($Latest.PackageName)'"
+				"(?i)(^\s*fileType\s*=\s*)('.*')"              = "`$1'$($Latest.fileType)'"
+				"(?i)(^\s*url\s*=\s*)('.*')"                   = "`$1'$($Latest.URL32)'"
+				"(?i)(^\s*url64bit\s*=\s*)('.*')"	             = "`$1'$($Latest.URL64)'"
+				"(?i)(^\s*Checksum\s*=\s*)('.*')"              = "`$1'$($Latest.Checksum32)'"
+				"(?i)(^\s*ChecksumType\s*=\s*)('.*')"          = "`$1'$($Latest.ChecksumType32)'"
+				"(?i)(^\s*Checksum64\s*=\s*)('.*')"            = "`$1'$($Latest.Checksum64)'"
+				"(?i)(^\s*ChecksumType64\s*=\s*)('.*')"        = "`$1'$($Latest.ChecksumType64)'"
 			}
 			".\adoptopenjdk.nuspec" = @{
-				"(?i)(^\s*\<title\>).*(\<\/title\>)" = "`${1}$($Latest.Title)`${2}"
-				"(?i)(^\s*\<summary\>).*(\<\/summary\>)" = "`${1}$($Latest.summary)`${2}"
+				"(?i)(^\s*\<title\>).*(\<\/title\>)"           = "`${1}$($Latest.Title)`${2}"
+				"(?i)(^\s*\<summary\>).*(\<\/summary\>)"       = "`${1}$($Latest.summary)`${2}"
 				"(?i)(^\s*\<licenseUrl\>).*(\<\/licenseUrl\>)" = "`${1}$($Latest.LicenseUrl)`${2}"
 			}
 		}
@@ -76,8 +78,9 @@ param(
 [string]$project = "jdk",
 [ValidateSet("large", "normal")]
 [string]$heap_size = "normal",
-[string]$dev_name, # orginal package name
-[switch]$ext # optional switch
+[string]$dev_name,     # orginal package name
+[switch]$ext,          # optional switch for extensions
+[switch]$fixedversion  # optional switch for fixedversion
 )
 $me = ( $MyInvocation.MyCommand );
 # Depending on the $arch used above determines which string is used in the call to the server
@@ -98,7 +101,11 @@ $links = @{$true=($rest.binaries.installer.link);$false=($rest.binaries.package.
 Write-Verbose "$me links -$links-"
 # Most Feature release version have a 32 & 64 bit version
 if ($links -is [array]) {
-$url32 = $links[-1]; $url64 = $links[0]; Write-Verbose "$me url32 -$url32-"
+  if ($links[0] -match "x64") {
+    $url32 = $links[-1]; $url64 = $links[0]; Write-Verbose "A $me url32 -$url32-"
+	} else {
+    $url32 = $links[0]; $url64 = $links[-1]; Write-Verbose "B $me url32 -$url32-"
+	}
 } else { $url64 = $links }; Write-Verbose "$me url64 -$url64-"
 # Getting the File Extension if prompted
 if ($ext) { $fileType = (( $url64 -split("\\") )[-1] -split("\.") )[-1] }
@@ -114,13 +121,18 @@ $JavaVM = @{$true = "${type}${number}"; $false = "${type}${number}-${jvm}" }[ ( 
 $PackageName = @{$true = "AdoptOpenJDK-${JavaVM}"; $false = "${dev_name}" }[ ( $dev_name -eq "" ) ]
 if ($url32 -match "${number}U") { $url32 = $url32 } else { $url32 = $null }
 Write-Verbose "$me url32 -$url32- url64 -$url64-"
+if ($fixedVersion) {
+  $packageVersion =  $beta
+} else {
+  $packageVersion = Get-FixVersion $beta
+}
 
 	@{
         Title           = "AdoptOpenJDK ${type}${number} ${jvm} ${version}"
         PackageName     = $PackageName
         URL32           = $url32
         URL64           = $url64
-        Version         = $beta
+        Version         = $packageVersion
         LicenseUrl      = "https://github.com/AdoptOpenJDK/openjdk-jdk${number}u/blob/master/LICENSE"
         SemVer          = $vest
         fileType        = $fileType
@@ -128,82 +140,41 @@ Write-Verbose "$me url32 -$url32- url64 -$url64-"
 }
 
 function global:au_GetLatest {
+# Skip 9 and 10 as they don't have MSI's
+$numbers = @("8", "11", "13", "14"); $types = @("jre", "jdk")
+# Optionally add "nightly" to $builds
+$jvms = @("hotspot", "openj9"); $builds = @("ga"); $os = "windows"
 
-  $streams = [ordered] @{
-	<# Version 8 Stable #>
-	AdoptOpenJDK8jdk = Get-OpenSourceJDK -number 8 -release ga -OS windows -type jdk -jvm hotspot -ext
-	AdoptOpenJDK8jre = Get-OpenSourceJDK -number 8 -release ga -OS windows -type jre -jvm hotspot -ext
-	AdoptOpenJDK8openj9jdk = Get-OpenSourceJDK -number 8 -release ga -OS windows -type jdk -jvm openj9 -ext
-	AdoptOpenJDK8openj9jre = Get-OpenSourceJDK -number 8 -release ga -OS windows -type jre -jvm openj9 -ext
-	# <# Version 9 Stable #>
-	# AdoptOpenJDK9jdk = Get-OpenSourceJDK -number 9 -release ga -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK9jre = Get-OpenSourceJDK -number 9 -release ga -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK9openj9jdk = Get-OpenSourceJDK -number 9 -release ga -OS windows -type jdk -jvm openj9 -ext
-#	AdoptOpenJDK9openj9jre = Get-OpenSourceJDK -number 9 -release ga -OS windows -type jre -jvm openj9 -ext
-	# <# Version 10 Stable #>
-	# AdoptOpenJDK10jdk = Get-OpenSourceJDK -number 10 -release ga -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK10jre = Get-OpenSourceJDK -number 10 -release ga -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK10openj9jdk = Get-OpenSourceJDK -number 10 -release ga -OS windows -type jdk -jvm openj9 -ext
-#	AdoptOpenJDK8openj9jre = Get-OpenSourceJDK -number 10 -release ga -OS windows -type jre -jvm openj9 -ext
-	<# Version 11 Stable #>
-	AdoptOpenJDK11jdk = Get-OpenSourceJDK -number 11 -release ga -OS windows -type jdk -jvm hotspot -ext
-	AdoptOpenJDK11jre = Get-OpenSourceJDK -number 11 -release ga -OS windows -type jre -jvm hotspot -ext
-	AdoptOpenJDK11openj9jdk = Get-OpenSourceJDK -number 11 -release ga -OS windows -type jdk -jvm openj9 -ext
-	AdoptOpenJDK11openj9jre = Get-OpenSourceJDK -number 11 -release ga -OS windows -type jre -jvm openj9 -ext
-	<# Version 12 Stable #>
-	AdoptOpenJDK12jdk = Get-OpenSourceJDK -number 12 -release ga -OS windows -type jdk -jvm hotspot -ext
-	AdoptOpenJDK12jre = Get-OpenSourceJDK -number 12 -release ga -OS windows -type jre -jvm hotspot -ext
-	AdoptOpenJDK12openj9jdk = Get-OpenSourceJDK -number 12 -release ga -OS windows -type jdk -jvm openj9 -ext
-	AdoptOpenJDK12openj9jre = Get-OpenSourceJDK -number 12 -release ga -OS windows -type jre -jvm openj9 -ext
-	<# Version 13 Stable #>
-	AdoptOpenJDK13jdk = Get-OpenSourceJDK -number 13 -release ga -OS windows -type jdk -jvm hotspot -ext
-	AdoptOpenJDK13jre = Get-OpenSourceJDK -number 13 -release ga -OS windows -type jre -jvm hotspot -ext
-	AdoptOpenJDK13openj9jdk = Get-OpenSourceJDK -number 13 -release ga -OS windows -type jdk -jvm openj9 -ext
-	AdoptOpenJDK13openj9jre = Get-OpenSourceJDK -number 13 -release ga -OS windows -type jre -jvm openj9 -ext
-	<# Version 14 Stable #>
-	AdoptOpenJDK14jdk = Get-OpenSourceJDK -number 14 -release ga -OS windows -type jdk -jvm hotspot -ext
-	AdoptOpenJDK14jre = Get-OpenSourceJDK -number 14 -release ga -OS windows -type jre -jvm hotspot -ext
-	AdoptOpenJDK14openj9jdk = Get-OpenSourceJDK -number 14 -release ga -OS windows -type jdk -jvm openj9 -ext
-	AdoptOpenJDK14openj9jre = Get-OpenSourceJDK -number 14 -release ga -OS windows -type jre -jvm openj9 -ext
-	<# Version 8 Early Release #>
-	# AdoptOpenJDK8jdk_nightly = Get-OpenSourceJDK -number 8 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK8jre_nightly = Get-OpenSourceJDK -number 8 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK8openj9jdk_nightly = Get-OpenSourceJDK -number 8 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK8openj9jre_nightly = Get-OpenSourceJDK -number 8 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 9 Early Release #>
-	# AdoptOpenJDK9jdk_nightly = Get-OpenSourceJDK -number 9 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK9jre_nightly = Get-OpenSourceJDK -number 9 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK9openj9jdk_nightly_nightly = Get-OpenSourceJDK -number 9 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK9openj9jre_nightly = Get-OpenSourceJDK -number 9 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 10 Early Release #>
-	# AdoptOpenJDK10jdk_nightly = Get-OpenSourceJDK -number 10 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK10jre_nightly = Get-OpenSourceJDK -number 10 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK10openj9jdk_nightly = Get-OpenSourceJDK -number 10 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK10openj9jre_nightly = Get-OpenSourceJDK -number 10 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 11 Early Release #>
-	# AdoptOpenJDK11jdk_nightly = Get-OpenSourceJDK -number 11 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK11jre_nightly = Get-OpenSourceJDK -number 11 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK11openj9jdk_nightly = Get-OpenSourceJDK -number 11 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK11openj9jre_nightly = Get-OpenSourceJDK -number 11 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 12 Early Release #>
-	# AdoptOpenJDK12jdk_nightly = Get-OpenSourceJDK -number 12 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK12jre_nightly = Get-OpenSourceJDK -number 12 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK12openj9jdk_nightly = Get-OpenSourceJDK -number 12 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK12openj9jre_nightly = Get-OpenSourceJDK -number 12 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 13 Early Release #>
-	# AdoptOpenJDK13jdk_nightly = Get-OpenSourceJDK -number 13 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK13jre_nightly = Get-OpenSourceJDK -number 13 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK13openj9jdk_nightly = Get-OpenSourceJDK -number 13 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK13openj9jre_nightly = Get-OpenSourceJDK -number 13 -release ea -OS windows -type jre -jvm openj9 -ext
-	<# Version 14 Early Release #>
-	# AdoptOpenJDK14jdk_nightly = Get-OpenSourceJDK -number 14 -release ea -OS windows -type jdk -jvm hotspot -ext
-	# AdoptOpenJDK14jre_nightly = Get-OpenSourceJDK -number 14 -release ea -OS windows -type jre -jvm hotspot -ext
-	# AdoptOpenJDK14openj9jdk_nightly = Get-OpenSourceJDK -number 14 -release ea -OS windows -type jdk -jvm openj9 -ext
-	# AdoptOpenJDK14openj9jre_nightly = Get-OpenSourceJDK -number 14 -release ea -OS windows -type jre -jvm openj9 -ext
-  }
-	
-  return @{ Streams = $streams }
- 
+$streams = [ordered] @{ }
+foreach ( $number in $numbers ) {
+	foreach ( $type in $types) {
+		foreach ( $jvm in $jvms ) {
+			foreach ( $build in $builds ) {        
+				# Create a package without the version for the latest release
+				if ( $number -eq $numbers[-1] ) { 
+					$name = "AdoptOpenJDK"
+					if ($jvm -eq "openj9") {
+						$name = $name + $jvm
+					}
+					if ($type -eq "jre") {
+						$name = $name + $type
+					} 
+					$streams.Add( "$($type)$($number)_$($jvm)_$($build)_Latest" , ( Get-OpenSourceJDK -number $number -type $type -jvm $jvm -OS $os -release $build -dev_name $name -ext ) )
+				} 
+
+				$name = "AdoptOpenJDK$number"
+				if ($jvm -eq "openj9") {
+					$name = $name + $jvm
+				}
+				if ($type -eq "jre") {
+					$name = $name + $type
+				}
+				$streams.Add( "$($type)$($number)_$($jvm)_$($build)" , ( Get-OpenSourceJDK -number $number -type $type -jvm $jvm -OS $os -release $build -dev_name $name -ext ) )        
+			}
+		}
+	}
+}
+return @{ Streams = $streams } 
 }
 
 update -ChecksumFor none -NoCheckUrl

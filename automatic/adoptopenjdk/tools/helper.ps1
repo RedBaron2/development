@@ -12,65 +12,58 @@ Update-TypeData -TypeName System.Collections.HashTable `
 function Test-PackageParamaters {
 [CmdletBinding()]
 param(
-    [hashtable]$hash
+    [hashtable]$pp
 )
-$New_pp = @{}; $toolsDir = "${env:ProgramFiles}\AdoptOpenJDK"
-	if ([string]::IsNullOrEmpty($pp.quiet)) {
-		$New_pp.add( "/quiet", $null )
-	}
-	if (![string]::IsNullOrEmpty($pp.transforms)) {
-		$New_pp.add( "/transforms", $pp.transforms )
-	}
-    if (![string]::IsNullOrEmpty($pp.INSTALLDIR) -and (($New_pp.ADDLOCAL -match "FeatureMain") -or ($pp.ADDLOCAL -match "FeatureMain")) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) {
-	    Write-Warning "You must use INSTALLDIR with FeatureMain."
-        Write-Warning "Using provided $($pp.INSTALLDIR)"
-        $New_pp.add( "/InstallDir", $pp.INSTALLDIR )
-    } elseif ([string]::IsNullOrEmpty($pp.INSTALLDIR) -and (($New_pp.ADDLOCAL -match "FeatureMain") -or ($pp.ADDLOCAL -match "FeatureMain")) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) { 
-	    Write-Warning "Using Default of $toolsDir"
-	    $New_pp.add( "/InstallDir", "$toolsDir" )
+$New_pp = @{}; 
+$toolsDir = @{$true="${env:ProgramFiles}\AdoptOpenJDK";$false="${env:programfiles(x86)}\AdoptOpenJDK"}[ ((Get-OSArchitectureWidth 64) -or ($env:chocolateyForceX86 -eq $true)) ]
+    if (![string]::IsNullOrEmpty($pp.transforms)) {
+      $New_pp.add( "transforms", $pp.transforms )
     }
-	if ((![string]::IsNullOrEmpty($pp.ADDLOCAL)) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) {
-        Write-Warning "Using Addlocal"
-        $addlocalArray = ($pp.ADDLOCAL -split "\,")
-        foreach ( $_ in $addlocalArray)  {
-	        switch -Wildcard ($_) {
-                "FeatureMain" {
-                    $pp_addlocal_array += -join ("FeatureMain", ",")
-                }
-                "FeatureEnvironment" {
-                    $pp_addlocal_array += -join ("FeatureEnvironment", ",")
-                }
-                "FeatureJarFileRunWith" {
-                    $pp_addlocal_array += -join ("FeatureJarFileRunWith", ",")
-                }
-                "FeatureJavaHome" {
-                    $pp_addlocal_array += -join ("FeatureJavaHome", ",")
-                }
-                "FeatureIcedTeaWeb" {
-                    $pp_addlocal_array += -join ("FeatureIcedTeaWeb", ",")
-                }
-                "FeatureJNLPFileRunWith" {
-                    $pp_addlocal_array += -join ("FeatureJNLPFileRunWith", ",")
-                }
-            }
+    if (![string]::IsNullOrEmpty($pp.INSTALLDIR) -and (($New_pp.ADDLOCAL -match "FeatureMain") -or ($pp.ADDLOCAL -match "FeatureMain")) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) {
+      Write-Warning "You must use INSTALLDIR with FeatureMain."
+      Write-Warning "Using provided $($pp.INSTALLDIR)"
+      $New_pp.add( "InstallDir", "`"`"$($pp.INSTALLDIR)`"`"" )
+    } elseif ([string]::IsNullOrEmpty($pp.INSTALLDIR) -and (($New_pp.ADDLOCAL -match "FeatureMain") -or ($pp.ADDLOCAL -match "FeatureMain")) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) { 
+      Write-Warning "Using Default of $toolsDir"
+      $New_pp.add( "InstallDir", "`"`"$toolsDir`"`"" )
+    }
+    if ((![string]::IsNullOrEmpty($pp.ADDLOCAL)) -and ([string]::IsNullOrEmpty($pp.INSTALLLEVEL)) ) {
+      Write-Warning "Using Addlocal"
+      $addlocalArray = ($pp.ADDLOCAL -split "\,")
+      foreach ( $_ in $addlocalArray)  {
+        switch -Wildcard ($_) {
+          "FeatureMain" {
+            $pp_addlocal_array += -join ("FeatureMain", ",")
+          }
+          "FeatureEnvironment" {
+            $pp_addlocal_array += -join ("FeatureEnvironment", ",")
+          }
+          "FeatureJarFileRunWith" {
+            $pp_addlocal_array += -join ("FeatureJarFileRunWith", ",")
+          }
+          "FeatureJavaHome" {
+            $pp_addlocal_array += -join ("FeatureJavaHome", ",")
+          }
+          "FeatureIcedTeaWeb" {
+            $pp_addlocal_array += -join ("FeatureIcedTeaWeb", ",")
+          }
+          "FeatureJNLPFileRunWith" {
+            $pp_addlocal_array += -join ("FeatureJNLPFileRunWith", ",")
+          }
         }
-        Write-Warning "No InstallLevel detected. Defaulting to AddLocal"
-	    $New_pp.add( "/ADDLOCAL", ($pp_addlocal_array -replace ".{1}$") )
-
-	}
-	if (![string]::IsNullOrEmpty($pp.INSTALLLEVEL) ) {
-	    switch ($pp.INSTALLLEVEL) {
-            "1" {
-                $New_pp.add( "/INSTALLLEVEL", "1" )
-            }
-            "2" {
-                $New_pp.add( "/INSTALLLEVEL", "2" )
-            }
-            "3" {
-                $New_pp.add( "/INSTALLLEVEL", "3" )
-            }
-        }
-	}
+      }
+      Write-Warning "No InstallLevel detected. Defaulting to AddLocal"
+      $New_pp.add( "ADDLOCAL", ($pp_addlocal_array -replace ".{1}$") )
+    }
+    if (![string]::IsNullOrEmpty($pp.INSTALLLEVEL) ) {
+       $New_pp.add( "INSTALLLEVEL", $pp.INSTALLLEVEL )
+    }
+    if ([string]::IsNullOrEmpty($pp.quiet)) {
+      $New_pp.add( "/quiet", $true )
+    } else {
+      # Added to make sure the /quiet silent install is carried over if the user adds it to the params switch list
+      $New_pp.add( "/quiet", $true )
+    }
 
 return $New_pp
 }
