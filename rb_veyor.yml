@@ -87,6 +87,7 @@ build_script:
     }
 
     ./update_all.ps1 libre* -chocochk $true
+    # This is odd
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
