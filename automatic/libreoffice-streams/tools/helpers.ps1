@@ -1,4 +1,5 @@
-﻿# Send a generic request to the LibreOffice update service
+# Send a generic request to the LibreOffice update service
+# $global:freshcount = 0; $global:stillcount = 0
 function GetLatestVersionFromLibOUpdateChecker($userAgent) {
   $url = "https://update.libreoffice.org/check.php"
   $request = [System.Net.WebRequest]::Create($url)
@@ -9,24 +10,51 @@ function GetLatestVersionFromLibOUpdateChecker($userAgent) {
   return $xmlAnswer.description.version
 }
 
+function Check-IfUpdateIsNeeded {
+param(
+  [string]$updateVersion,
+  [ValidateSet('still', 'fresh')]
+  [string]$build = 'fresh',
+  [string]$Releases = "https://www.libreoffice.org/download/libreoffice-${build}"
+)
+# Invoke-WebRequest to the Releases Uri
+$download_page = Invoke-WebRequest -Uri $Releases -UseBasicParsing
+if ($build -eq 'fresh') {
+$url = $download_page.links | ? href -match '\.msi$' | % href | select -First 1
+} else {
+$freshRe = "[\/_]" + [regex]::Escape(($freshVersion -replace "^([\d]+\.[\d]+).*$", '$1'))
+$url = $download_page.links | ? { $_.href -match '\.msi$' -and $_.href -notmatch $freshRe } | % href | select -First 1
+}
+# We only need the Version number for Comparision
+$webupdateVersion = $url -split '/' | ? { [version]::TryParse($_, [ref]($__)) }
+# Compare the Version Numbers
+if ($updateVersion -ge $webupdateVersion) { $version = $updateVersion } else { $version = $webupdateVersion }
+# Write-Warning "stillcount -$global:stillcount- freshcount -$global:freshcount- version -$version- build -$build-"
+return $version
+}
+
 # Send a request to the LibreOffice update service to get the latest Still
 # version
 function GetLatestStillVersionFromLibOUpdateChecker() {
+# if ( [string]::isNullorEmpty($global:stillcount) ) { $global:stillcount = 0 } else { $global:stillcount++ }
   # We are taking the build UUID of 3.5.7. This is needed because the update
   # service is determining which branch to take depending on the third dot
   # number. If the latest fresh release has a third dot number greater or
   # equal to the third dot number we specified (here 7), the fresh branch is
   # returned, otherwise this is the Still branch.
   # src.: https://web.archive.org/web/20190806174607/https://cgit.freedesktop.org/libreoffice/website/tree/check.php?h=update&id=c0c4940e998a0f5fbeb57910b1dfe6778226c51b#n665
-  return GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (3215f89-f603614-ab984f2-7348103-1225a5b; Chocolatey; x86; )"
+  # return GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (3215f89-f603614-ab984f2-7348103-1225a5b; Chocolatey; x86; )"
+  return Check-IfUpdateIsNeeded -updateVersion ( GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (3215f89-f603614-ab984f2-7348103-1225a5b; Chocolatey; x86; )" ) -build "still"
 }
 
 # Send a request to the LibreOffice update service to get the latest fresh
 # version
 function GetLatestFreshVersionFromLibOUpdateChecker() {
+# if ( [string]::isNullorEmpty($global:freshcount) ) { $global:freshcount = 0 } else { $global:freshcount++ }
   # We are taking the build UUID of 3.5.0.1 here for the same explanation
   # as before.
-  return GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (b6c8ba5-8c0b455-0b5e650-d7f0dd3-b100c87; Chocolatey; x86; )"
+  # return GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (b6c8ba5-8c0b455-0b5e650-d7f0dd3-b100c87; Chocolatey; x86; )"
+  return Check-IfUpdateIsNeeded -updateVersion ( GetLatestVersionFromLibOUpdateChecker "LibreOffice 0 (b6c8ba5-8c0b455-0b5e650-d7f0dd3-b100c87; Chocolatey; x86; )" ) -build "fresh"
 }
 
 # Get all the links from a MirrorBrain instance without the copyright
