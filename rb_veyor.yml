@@ -86,10 +86,11 @@ build_script:
         }
     }
 
-    ./update_all.ps1 ad* -chocochk $true
-    #cd ../automatic/windows10-media-creation-tool
+    ./update_all.ps1 cyg* -chocochk $true
+    cd C:\projects\development\packages
+    choco install Cygwin --params="C:\Program Files\Cygwin" -dvy
     #./update.ps1
-    #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
+    7z a Choco_log.zip %ChocolateyInstall%\logs\chocolatey.log
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
     7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
