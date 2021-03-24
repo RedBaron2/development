@@ -90,7 +90,7 @@ build_script:
     cd C:\projects\development\packages
     choco install Cygwin --params="C:\Program Files\Cygwin" -dvy
     #./update.ps1
-    7z a Choco_log.zip %ChocolateyInstall%\logs\chocolatey.log
+    7z a Choco_log.zip ${env:ChocolateyInstall}\logs\chocolatey.log
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
     7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
