@@ -86,10 +86,14 @@ build_script:
         }
     }
 
-    ./update_all.ps1 ad* -chocochk $true
+    ./update_all.ps1 cyg* -chocochk $true
+    # Blanking rootdir for testing purposes only
+    Set-ItemProperty 'HKLM:\SOFTWARE\Cygwin\setup' -Name "rootdir" -Value ""
+    choco install chocolatey-core.extension -y
+    choco install Cygwin --params="/InstallDir:C:Program Files\Cgywin" -dvy -s="C:\projects\development\packages"
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
-    #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
+    7z a Choco_logs.zip $Env:ChocolateyInstall\logs\chocolatey.log
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
     7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
