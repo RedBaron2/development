@@ -49,7 +49,7 @@ $packageArgs = @{
 
 Write-Host "Copying cygwin package manager (setup) to $cygwin_root"
 $setup_path = if ((Get-OSArchitectureWidth 32) -or $env:ChocolateyForceX86) { $packageArgs.file } else { $packageArgs.file64 }
-Copy-Item "$setup_path" "$cygwin_root\cygwinsetup.exe" -Force
+Copy-Item -Path "$setup_path" -Destination "$cygwin_root\cygwinsetup.exe" -Force
 
 Install-ChocolateyInstallPackage @packageArgs
 
