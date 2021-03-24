@@ -87,8 +87,8 @@ build_script:
     }
 
     ./update_all.ps1 cyg* -chocochk $true
-    cd C:\projects\development\packages
-    choco install Cygwin --params="C:\Program Files\Cygwin" -dvy -s="C:\projects\development\packages"
+    # cd C:\projects\development\packages
+    # choco install Cygwin --params="C:\Program Files\Cygwin" -dvy -s="C:\projects\development\packages"
     #./update.ps1
     7z a Choco_log.zip ${env:ChocolateyInstall}\logs\chocolatey.log
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
@@ -108,4 +108,4 @@ artifacts:
 #  on_build_status_changed: true
 
 on_finish:
-# - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+ - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
