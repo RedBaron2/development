@@ -8,10 +8,10 @@ $toolsLocation = Get-ToolsLocation
 mkdir $toolsLocation -ea 0 | Out-Null
 
 $cygwin_root = (Get-ItemProperty 'HKLM:\SOFTWARE\Cygwin\setup' -ea 0).rootdir
-if (!$cygwin_root) {
+if (!([string]::IsNullOrempty($cygwin_root)) ) {
     $cygwin_root = if ($pp.InstallDir) { $pp.InstallDir } else { "$toolsLocation\cygwin" }
-} else { Write-Host 'Existing installation detected, ignoring InstallDir argument' }
-
+} else { Write-Warning 'Existing installation detected, ignoring InstallDir argument' }
+sleep 10
 if (!$pp.Proxy) {
     $pp.Proxy = $Env:ChocolateyProxyLocation
     if (!$pp.Proxy) {
