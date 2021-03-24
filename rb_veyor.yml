@@ -90,7 +90,7 @@ build_script:
     # Removing rootdir for testing purposes only
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Cygwin\setup" -Name "rootdir"
     choco install chocolatey-core.extension -y
-    choco install Cygwin --params="/InstallDir:C:Program Files\Cgywin" -dvy
+    choco install Cygwin --params="/InstallDir:C:\Program Files\Cgywin" -dvy
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     7z a Choco_logs.zip $Env:ChocolateyInstall\logs\chocolatey.log
