@@ -46,13 +46,11 @@ $packageArgs = @{
   silentArgs     = $silentArgs
   validExitCodes = @(0)
 }
-
-Write-Host "Copying cygwin package manager (setup) to $cygwin_root"
-$setup_path = if ((Get-OSArchitectureWidth 32) -or $env:ChocolateyForceX86) { $packageArgs.file } else { $packageArgs.file64 }
-Write-Host "setup_path -$setup_path-"
-sleep 20
-Copy-Item -Path "$setup_path" -Destination "$cygwin_root\cygwinsetup.exe" -Force
-
 Install-ChocolateyInstallPackage @packageArgs
 
 Install-BinFile -Name "Cygwin" -Path "$cygwin_root\Cygwin.bat"
+
+Write-Host "Copying cygwin package manager (setup) to $cygwin_root"
+$setup_path = if ((Get-OSArchitectureWidth 32) -or $env:ChocolateyForceX86) { $packageArgs.file } else { $packageArgs.file64 }
+New-Item -ItemType Directory -Path $cygwin_root
+Move-Item $setup_path $cygwin_root\cygwinsetup.exe -Force
