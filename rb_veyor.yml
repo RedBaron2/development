@@ -86,10 +86,34 @@ build_script:
         }
     }
 
-    ./update_all.ps1 ad* -chocochk $true
+    ./update_all.ps1 cyg* -chocochk $true
+    # Removing rootdir for testing purposes only
+    Remove-ItemProperty -Path "HKLM:\SOFTWARE\Cygwin\setup" -Name "rootdir"
+    choco install chocolatey-core.extension -y
+    choco install Cygwin --params="/InstallDir:C:\Program Files\Cgywin" -s="C:\projects\development\packages" -dvy
+    # Diagnostic Testing
+    Write-Warning "Starting Diagnostic Tests"
+    $Package_Folder = "C:\Program Files\Cgywin"
+    if (Test-Path $Package_Folder) {
+    Write-Host "The folder $Package_Folder exists"
+    $Cygwin_exe_Files = Get-ChildItem -Path $Package_Folder
+    $count = $Cygwin_exe_Files.count
+    Write-Host "Getting all -$count- files from $Package_Folder"
+      foreach( $PSItem in $Cygwin_exe_Files) {
+        if (Test-Path "$Package_Folder\$PSItem") {
+            Write-Host "File $PSItem Exists at $Package_Folder"
+        } else {
+            Write-Warning "File $PSItem DOES NOT Exist at $Package_Folder"
+        }
+      }
+    } else {
+    Write-Warning "The folder $Package_Folder DOES NOT Exist"
+    }
+    Write-Warning "Finis Diagnostic Tests and sleep for 20"
+    sleep 20    
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
-    #7z a au_temp.zip $Env:TEMP\chocolatey\au\*
+    7z a Choco_logs.zip $Env:ChocolateyInstall\logs\chocolatey.log
     7z a AU_Updates_temp.zip $Env:TEMP\AU_Updates\*
     7z a All_nupkg_files.zip -r C:\projects\development\packages\*.nupkg
 
