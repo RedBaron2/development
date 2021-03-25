@@ -91,6 +91,19 @@ build_script:
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Cygwin\setup" -Name "rootdir"
     choco install chocolatey-core.extension -y
     choco install Cygwin --params="/InstallDir:C:\Program Files\Cgywin" -s="C:\projects\development\packages" -dvy
+    # Diagnostic Testing
+    if (Test-Path "C:\Program Files\Cgywin") {
+    Write-Host "The folder C:\Program Files\Cgywin exists"
+    } else {
+    Write-Warning "The folder C:\Program Files\Cgywin DOES NOT Exist"
+    }
+    if (test-path "C:\Program Files\Cgywin\cygwinsetup.exe") {
+    Write-Host "The File cygwinsetup.exe exists at C:\Program Files\Cgywin"
+    } else {
+    Write-Warning "The File cygwinsetup.exe DOES NOT exist at C:\Program Files\Cgywin"
+    }
+    sleep 30
+    
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     7z a Choco_logs.zip $Env:ChocolateyInstall\logs\chocolatey.log
