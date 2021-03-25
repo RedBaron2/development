@@ -92,18 +92,24 @@ build_script:
     choco install chocolatey-core.extension -y
     choco install Cygwin --params="/InstallDir:C:\Program Files\Cgywin" -s="C:\projects\development\packages" -dvy
     # Diagnostic Testing
-    if (Test-Path "C:\Program Files\Cgywin") {
-    Write-Host "The folder C:\Program Files\Cgywin exists"
+    Write-Warning "Starting Diagnostic Tests"
+    $Package_Folder = "C:\Program Files\Cgywin"
+    if (Test-Path $Package_Folder) {
+    Write-Host "The folder $Package_Folder exists"
+    Write-Host "Getting all exe files from $Package_Folder"
+    $Cygwin_exe_Files = Get-ChildItem -Path $Package_Folder -Filter *.exe
+      foreach( $PSItem in $Cygwin_exe_Files) {
+        if (Test-Path $PSItem) {
+            Write-Host "File $PSItem Exists at C:\Program Files\Cgywin"
+        } else {
+            Write-Warning "File $PSItem DOES NOT Exist at C:\Program Files\Cgywin"
+        }
+      }
     } else {
-    Write-Warning "The folder C:\Program Files\Cgywin DOES NOT Exist"
+    Write-Warning "The folder $Package_Folder DOES NOT Exist"
     }
-    if (test-path "C:\Program Files\Cgywin\cygwinsetup.exe") {
-    Write-Host "The File cygwinsetup.exe exists at C:\Program Files\Cgywin"
-    } else {
-    Write-Warning "The File cygwinsetup.exe DOES NOT exist at C:\Program Files\Cgywin"
-    }
-    sleep 30
-    
+    Write-Warning "Finis Diagnostic Tests and sleep for 20"
+    sleep 20    
     #cd ../automatic/windows10-media-creation-tool
     #./update.ps1
     7z a Choco_logs.zip $Env:ChocolateyInstall\logs\chocolatey.log
