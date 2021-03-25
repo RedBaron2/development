@@ -53,4 +53,4 @@ Install-BinFile -Name "Cygwin" -Path "$cygwin_root\Cygwin.bat"
 Write-Host "Copying cygwin package manager (setup) to $cygwin_root"
 $setup_path = if ((Get-OSArchitectureWidth 32) -or $env:ChocolateyForceX86) { $packageArgs.file } else { $packageArgs.file64 }
 New-Item -ItemType Directory -Path $cygwin_root
-Move-Item $setup_path $cygwin_root\cygwinsetup.exe -Force
+Move-Item $setup_path $cygwin_root\cygwinsetup.exe -Force -ErrorAction SilentlyContinue
