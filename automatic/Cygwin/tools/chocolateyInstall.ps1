@@ -27,8 +27,8 @@ $silentArgs = @(
     '--quiet-mode'
     "--site $($pp.Site)"
     '--packages default'
-    "--root '$cygwin_root'"
-    "--local-package-dir '$cygwin_root'"
+    "--root ""$cygwin_root"""
+    "--local-package-dir ""$cygwin_root"""
 
     if (!$pp.DesktopIcon) { '--no-desktop' } else {  Write-Host 'Desktop icon will be created' }
     if ($pp.NoStartMenu)  { '--no-startmenu';        Write-Host 'No start menu items will be created' }
